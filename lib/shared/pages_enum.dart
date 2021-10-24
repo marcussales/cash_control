@@ -1,0 +1,1 @@
+enum Pages { HOME, MY_SPENTS, NEW_SPENT, MY_CARDS, PERFIL }

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "134792867640",
+    "project_id": "cash-control-ce4ef",
+    "storage_bucket": "cash-control-ce4ef.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:134792867640:android:412b0253ed25a2e6671bcd",
+        "android_client_info": {
+          "package_name": "br.com.sales.oliveira.cash_control"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "134792867640-9rjs07j5jtn5nlof0bk8pl5l97a02rgj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.sales.oliveira.cash_control",
+            "certificate_hash": "494ff318adc8f6b43d9dc3d1d8b5b48720c779a5"
+          }
+        },
+        {
+          "client_id": "134792867640-1c36rdede5q9g6pjknm1g7duj8tir33g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4G2ujb5t1S9sjt2SAiWh8pBBfctQqhGM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "134792867640-1c36rdede5q9g6pjknm1g7duj8tir33g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
