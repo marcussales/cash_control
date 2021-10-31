@@ -2,6 +2,7 @@ import 'package:cash_control/models/CategoryModel.dart';
 import 'package:cash_control/models/SpentModel.dart';
 import 'package:cash_control/shared/global.dart';
 import 'package:cash_control/shared/parse_errors.dart';
+import 'package:cash_control/shared/snackbar_message.dart';
 import 'package:cash_control/shared/table_keys.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
@@ -55,7 +56,8 @@ class SpentApi {
       }
       return response.results.map((e) => mapParseToSpent(e)).toList();
     } else {
-      throw ParseErrors.getDescription(response.error.code);
+      return SnackBarMessage()
+          .errorMsg(ParseErrors.getDescription(response.error.code));
     }
   }
 
@@ -63,7 +65,7 @@ class SpentApi {
     final queryBuilder = QueryBuilder(ParseObject(keySpentTable))
       ..orderByDescending(keySpentDate);
     queryBuilder.whereEqualTo(keySpentcategoryId, category.objectId);
-    queryBuilder.whereEqualTo(keySpentMonth, DateTime.now());
+    queryBuilder.whereEqualTo(keySpentMonth, DateTime.now().month);
     final response = await queryBuilder.query();
     if (response.success && response.results != null) {
       return response.results.map((e) => mapParseToSpent(e)).toList();
@@ -85,7 +87,8 @@ class SpentApi {
       }
       return null;
     } else {
-      throw ParseErrors.getDescription(response.error.code);
+      return SnackBarMessage()
+          .errorMsg(ParseErrors.getDescription(response.error.code));
     }
   }
 

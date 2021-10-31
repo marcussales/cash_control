@@ -39,6 +39,17 @@ mixin _$LoadingController on _LoadingController, Store {
   }
 
   @override
+  Future<dynamic> showLoading() {
+    final _$actionInfo = _$_LoadingControllerActionController.startAction(
+        name: '_LoadingController.showLoading');
+    try {
+      return super.showLoading();
+    } finally {
+      _$_LoadingControllerActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 isLoading: ${isLoading}

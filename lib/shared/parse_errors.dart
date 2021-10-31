@@ -52,4 +52,8 @@ class ParseErrors {
   static String getDescription(int error) {
     return _error[error];
   }
+
+  static String getDefaultDescription() {
+    return 'Ocorreu um erro, contate o administrador do sistema';
+  }
 }

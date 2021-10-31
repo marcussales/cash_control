@@ -11,24 +11,29 @@ class NoSignalScreen extends StatelessWidget {
           title: 'Sem sinal de internet',
           showBackButton: false,
         ),
-        body: ContainerPlus(
-          padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
-          child: Column(
-            children: [
-              Image.asset(
-                'assets/images/noConnection.png',
-                width: 200.0,
-                height: 600,
-              ),
-              TextPlus(
-                'Ops... precisamos de internet para buscar suas finanças',
-                fontWeight: FontWeight.w800,
-                fontSize: 24,
-                color: ColorsUtil.verdeEscuro,
-                textAlign: TextAlign.center,
-              )
-            ],
+        body: _buildBody());
+  }
+
+  Widget _buildBody() {
+    return SingleChildScrollView(
+        child: ContainerPlus(
+      padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
+      child: Column(
+        children: [
+          Image.asset(
+            'assets/images/noConnection.png',
+            width: 200.0,
+            height: 600,
           ),
-        ));
+          TextPlus(
+            'Ops... precisamos de internet para buscar suas finanças',
+            fontWeight: FontWeight.w800,
+            fontSize: 24,
+            color: ColorsUtil.verdeEscuro,
+            textAlign: TextAlign.center,
+          )
+        ],
+      ),
+    ));
   }
 }

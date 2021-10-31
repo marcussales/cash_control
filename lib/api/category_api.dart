@@ -2,6 +2,7 @@ import 'package:cash_control/models/CardSpentModel.dart';
 import 'package:cash_control/models/CategoryModel.dart';
 import 'package:cash_control/shared/global.dart';
 import 'package:cash_control/shared/parse_errors.dart';
+import 'package:cash_control/shared/snackbar_message.dart';
 import 'package:cash_control/shared/table_keys.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
@@ -26,7 +27,7 @@ class CategoryApi {
 
   Future<List<CategoryModel>> getCategories({int limit}) async {
     final queryBuilder = QueryBuilder(ParseObject(keyCategoryTable))
-      ..orderByAscending(keyCategoryTitle);
+      ..orderByDescending(keyVarUpdatedAt);
 
     if (limit != null) queryBuilder.setLimit(limit);
 
@@ -41,7 +42,8 @@ class CategoryApi {
           .map((e) => CategoryModel().mapParseToCategory(e))
           .toList();
     } else {
-      throw ParseErrors.getDescription(response.error.code);
+      return SnackBarMessage()
+          .errorMsg(ParseErrors.getDescription(response.error.code));
     }
   }
 
@@ -57,7 +59,8 @@ class CategoryApi {
           .map((e) => CategoryModel().mapParseToCategory(e))
           .toList();
     } else {
-      throw ParseErrors.getDescription(response.error.code);
+      return SnackBarMessage()
+          .errorMsg(ParseErrors.getDescription(response.error.code));
     }
   }
 
@@ -95,7 +98,8 @@ class CategoryApi {
         return [];
       }
     } else {
-      throw ParseErrors.getDescription(response.error.code);
+      return SnackBarMessage()
+          .errorMsg(ParseErrors.getDescription(response.error.code));
     }
   }
 }

@@ -9,4 +9,8 @@ abstract class _LoadingController with Store {
 
   @action
   bool updateLoading(bool value) => isLoading = value;
+
+  @action
+  Future showLoading() =>
+      Future.delayed(Duration(milliseconds: 150)).then((value) => isLoading);
 }

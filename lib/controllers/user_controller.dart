@@ -35,6 +35,12 @@ abstract class _UserController with Store {
   @action
   bool updateLoginStatus(value) => doLogin = value;
 
+  Future<void> logoutCurrentUser(_googleSignIn) async {
+    if (_googleSignIn.currentUser == null) {
+      await _googleSignIn.signOut();
+    }
+  }
+
   @action
   Future loginOrSignUp(GoogleSignInAccount googleSignInAccount) async {
     auth.user = UserModel();

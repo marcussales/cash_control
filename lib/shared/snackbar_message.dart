@@ -8,11 +8,11 @@ class SnackBarMessage {
   }
 
   errorMsg(String title) {
-    showMessage(title: title, bgColor: ColorsUtil.vermelhoEscuro);
+    showMessage(title: title, txtColor: Colors.white, bgColor: ColorsUtil.vermelhoEscuro);
   }
 
   showSucessMessage(String title) {
-    showMessage(title: title, bgColor: ColorsUtil.verdeSucesso);
+    showMessage(title: title, txtColor: Colors.white, bgColor: ColorsUtil.verdeSucesso);
   }
 
   showMessage({String title, Color txtColor, Color bgColor}) {

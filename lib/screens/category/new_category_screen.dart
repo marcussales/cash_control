@@ -1,6 +1,7 @@
 import 'package:cash_control/controllers/category_controller.dart';
 import 'package:cash_control/controllers/icons_controller.dart';
 import 'package:cash_control/screens/category/components/icons_list_widget.dart';
+import 'package:cash_control/screens/loading/loading_screen.dart';
 import 'package:cash_control/shared/snackbar_message.dart';
 import 'package:cash_control/util/colors_util.dart';
 import 'package:cash_control/widget/button_widget.dart';
@@ -29,7 +30,10 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return
+        // LoadingScreen(
+        // key: Key('CategoryScreen'),
+        Scaffold(
       appBar: CustomAppBar(title: 'Criar categoria'),
       body: SingleChildScrollView(
         child: ContainerPlus(

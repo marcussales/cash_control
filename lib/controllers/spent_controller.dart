@@ -161,6 +161,10 @@ abstract class _SpentController with Store {
         id: selectedCategory.objectId, spent: spent);
   }
 
+  getFormattedCurrentMonth() {
+    return months.firstWhere((m) => m.id == DateTime.now().month).month;
+  }
+
   bool isSelectedCard(item) =>
       cardSpent != null ? cardSpent.cardId == item.cardId : false;
 

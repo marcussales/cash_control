@@ -3,6 +3,7 @@ import 'package:cash_control/models/CardSpentModel.dart';
 import 'package:cash_control/models/SpentModel.dart';
 import 'package:cash_control/shared/global.dart';
 import 'package:cash_control/shared/parse_errors.dart';
+import 'package:cash_control/shared/snackbar_message.dart';
 import 'package:cash_control/shared/table_keys.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
@@ -43,7 +44,7 @@ class CardApi {
       }
       return response.results.map((e) => mapParseToMonthSpent(e)).toList();
     } else {
-      throw ParseErrors.getDescription(response.error.code);
+      return SnackBarMessage().errorMsg(ParseErrors.getDefaultDescription());
     }
   }
 
@@ -56,7 +57,8 @@ class CardApi {
     if (response.success) {
       return response.results.map((e) => mapParseToMonthSpent(e)).toList();
     } else {
-      throw ParseErrors.getDescription(response.error.code);
+      return SnackBarMessage()
+          .errorMsg(ParseErrors.getDescription(response.error.code));
     }
   }
 
@@ -100,10 +102,11 @@ class CardApi {
           return;
         }
       } catch (e) {
-        throw ParseErrors.getDescription(e);
+        return SnackBarMessage().errorMsg(ParseErrors.getDefaultDescription());
       }
     } else {
-      throw ParseErrors.getDescription(response.error.code);
+      return SnackBarMessage()
+          .errorMsg(ParseErrors.getDescription(response.error.code));
     }
   }
 
@@ -134,10 +137,12 @@ class CardApi {
           return;
         }
       } catch (e) {
-        throw ParseErrors.getDescription(e);
+        return SnackBarMessage()
+            .errorMsg(ParseErrors.getDescription(response.error.code));
       }
     } else {
-      throw ParseErrors.getDescription(response.error.code);
+      return SnackBarMessage()
+          .errorMsg(ParseErrors.getDescription(response.error.code));
     }
   }
 

@@ -11,7 +11,9 @@ extension StringExtension on String {
     return DateFormat('dd/MM/yyyy').parse(this);
   }
 
-  String numToFormattedMoney({withoutSymbol = false}) {
+  String numToFormattedMoney({
+    withoutSymbol = false,
+  }) {
     final value = double.parse(this);
     return value.formattedMoneyBr(withoutSymbol: withoutSymbol);
   }

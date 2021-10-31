@@ -96,8 +96,8 @@ class CardTile extends StatelessWidget {
         children: [
           TextPlus(
             card.monthSpents.totalValue != null
-                ? '- ${card.monthSpents.totalValue.toString().numToFormattedMoney()}'
-                : '- ${'0.00'.numToFormattedMoney()}',
+                ? '${card.monthSpents.totalValue.toString().numToFormattedMoney()}'
+                : '${'0.00'.numToFormattedMoney()}',
             fontSize: 20,
             color: ColorsUtil.vermelhoEscuro,
             fontWeight: FontWeight.w800,

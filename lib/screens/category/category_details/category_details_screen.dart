@@ -26,11 +26,7 @@ class _CategoryDetailsScreenState extends State<CategoryDetailsScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await spentController.getCategorySpents(widget.category);
-      spentController.isPositiveBalance(
-          value1: spentController.categorySpentsValue,
-          value2:
-              double.parse(widget.category.spentsGoal.replaceAll(',', '.')));
+      await getCategoryData();
     });
     super.initState();
   }
@@ -48,6 +44,13 @@ class _CategoryDetailsScreenState extends State<CategoryDetailsScreen> {
             child: _buildBody()),
       ),
     );
+  }
+
+  Future getCategoryData() async {
+    await spentController.getCategorySpents(widget.category);
+    spentController.isPositiveBalance(
+        value1: spentController.categorySpentsValue,
+        value2: double.parse(widget.category.spentsGoal.replaceAll(',', '.')));
   }
 
   Widget _buildBody() {

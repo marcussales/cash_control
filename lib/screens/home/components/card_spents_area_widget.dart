@@ -1,4 +1,5 @@
 import 'package:cash_control/controllers/card_controller.dart';
+import 'package:cash_control/shared/global.dart';
 import 'package:cash_control/util/colors_util.dart';
 import 'package:cash_control/widget/card_item_widget.dart';
 import 'package:flutter/material.dart';
@@ -21,10 +22,10 @@ class CardSpentsAreaWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              TextPlus(
-                  'Gastos em cartões (${DateFormat(DateFormat.ABBR_MONTH, 'pt_Br').format(DateTime.now()).toUpperCase()}/${DateFormat(DateFormat.YEAR, 'pt_Br').format(DateTime.now())})',
-                  color: ColorsUtil.verdeEscuro,
-                  fontSize: 18),
+              TextPlus('Gastos em cartões',
+                  color: ColorsUtil.verdeEscuro, fontSize: 18),
+              TextPlus('(${getCurrentDate()})',
+                  color: ColorsUtil.verdeEscuro, fontSize: 18),
             ],
           ),
           ContainerPlus(
@@ -44,5 +45,9 @@ class CardSpentsAreaWidget extends StatelessWidget {
         ],
       );
     });
+  }
+
+  String getCurrentDate() {
+    return '${spentController.getFormattedCurrentMonth()} / ${DateTime.now().year}';
   }
 }

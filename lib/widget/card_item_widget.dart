@@ -76,8 +76,7 @@ class CardItemWidget extends StatelessWidget {
                         color: isSelectedItem(card)
                             ? Colors.white
                             : ColorsUtil.verdeEscuro)
-                    : TextPlus(
-                        '- ${card.monthSpents.totalValue.toString().numToFormattedMoney()}',
+                    : TextPlus(spentValue(),
                         fontSize: 18,
                         fontWeight: isSelectedItem(card)
                             ? FontWeight.w700
@@ -97,5 +96,11 @@ class CardItemWidget extends StatelessWidget {
     if (isSelectedItem(card) || !isSelectable)
       return [ColorsUtil.verdeEscuro, ColorsUtil.verdeSecundarioGradient];
     return [ColorsUtil.cinzaClaro, ColorsUtil.cinzaClaroGradient];
+  }
+
+  String spentValue() {
+    return card.monthSpents.totalValue > 0
+        ? '${card.monthSpents.totalValue.toString().numToFormattedMoney()}'
+        : '0.0'.numToFormattedMoney();
   }
 }

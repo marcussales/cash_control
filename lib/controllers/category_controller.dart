@@ -20,8 +20,10 @@ abstract class _CategoryController with Store {
 
   Future<void> saveCategory(
       String title, String spentGoal, String icon, Function callBack) async {
+    loading.updateLoading(true);
     await _api.saveCategory(title, spentGoal, icon);
     callBack.call();
+    loading.updateLoading(false);
   }
 
   @action

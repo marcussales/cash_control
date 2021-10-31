@@ -18,7 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    _logoutCurrentUser();
+    _controller.logoutCurrentUser(_googleSignIn);
     super.initState();
   }
 
@@ -32,72 +32,65 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorsUtil.verdeEscuro,
-      body: ContainerPlus(
-        width: 320,
-        padding: EdgeInsets.only(left: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextPlus(
-              'Suas finanças',
-              fontSize: 40,
-              textAlign: TextAlign.start,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-            SizedBox(height: 20),
-            TextPlus(
-              'na palma',
-              fontSize: 40,
-              textAlign: TextAlign.start,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-            SizedBox(height: 20),
-            TextPlus(
-              'da sua mão',
-              fontSize: 40,
-              textAlign: TextAlign.start,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-            SizedBox(height: 60),
-            TextPlus(
-              'A forma mais simples de controlar seus gastos e melhorar seu planejamento financeiro',
-              fontSize: 24,
-              textAlign: TextAlign.start,
-              fontWeight: FontWeight.bold,
-              wordSpacing: 4,
-              color: Colors.white,
-            ),
-            SizedBox(height: 60),
-            _buildLoginButton(),
-            SizedBox(height: 20),
-            TextPlus(
-              'ou',
-              fontSize: 22,
-              textAlign: TextAlign.start,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 3,
-              wordSpacing: 4,
-              color: ColorsUtil.verdeSecundario,
-            ),
-            SizedBox(height: 20),
-            ContainerPlus(
-                onTap: _signUp,
-                child: (TextPlus(
-                  'Cadastre-se',
-                  fontSize: 22,
-                  textAlign: TextAlign.start,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 3,
-                  wordSpacing: 4,
-                  color: ColorsUtil.verdeSecundario,
-                ))),
-          ],
-        ),
+      body: _buildBody(),
+    );
+  }
+
+  Widget _buildBody() {
+    return ContainerPlus(
+      width: 320,
+      padding: EdgeInsets.only(left: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildIntroTxt(),
+          SizedBox(height: 40),
+          _buildLoginButton(),
+          SizedBox(height: 20),
+          _buildSignUpArea()
+        ],
       ),
+    );
+  }
+
+  Column _buildIntroTxt() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextPlus(
+          'Suas finanças',
+          fontSize: 40,
+          textAlign: TextAlign.start,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        SizedBox(height: 20),
+        TextPlus(
+          'na palma',
+          fontSize: 40,
+          textAlign: TextAlign.start,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        SizedBox(height: 20),
+        TextPlus(
+          'da sua mão',
+          fontSize: 40,
+          textAlign: TextAlign.start,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        SizedBox(height: 60),
+        TextPlus(
+          'A forma mais simples de controlar seus gastos e melhorar seu planejamento financeiro',
+          fontSize: 24,
+          textAlign: TextAlign.start,
+          fontWeight: FontWeight.bold,
+          wordSpacing: 4,
+          color: Colors.white,
+        ),
+      ],
     );
   }
 
@@ -131,6 +124,35 @@ class _LoginScreenState extends State<LoginScreen> {
           })
         ],
       ),
+    );
+  }
+
+  Widget _buildSignUpArea() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextPlus(
+          'ou',
+          fontSize: 22,
+          textAlign: TextAlign.start,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 3,
+          wordSpacing: 4,
+          color: ColorsUtil.verdeSecundario,
+        ),
+        SizedBox(height: 20),
+        ContainerPlus(
+            onTap: _signUp,
+            child: (TextPlus(
+              'Cadastre-se',
+              fontSize: 22,
+              textAlign: TextAlign.start,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 3,
+              wordSpacing: 4,
+              color: ColorsUtil.verdeSecundario,
+            ))),
+      ],
     );
   }
 
