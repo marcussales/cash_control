@@ -11,9 +11,15 @@ extension StringExtension on String {
     return DateFormat('dd/MM/yyyy').parse(this);
   }
 
-  String numToFormattedMoney() {
+  String numToFormattedMoney({withoutSymbol = false}) {
     final value = double.parse(this);
-    return value.formattedMoneyBr();
+    return value.formattedMoneyBr(withoutSymbol: withoutSymbol);
+  }
+
+  String formatStringToReal() {
+    final formattedStr =
+        this.toString().replaceFirst('.', '').replaceAll(',', '.');
+    return double.parse(formattedStr).toString();
   }
 }
 

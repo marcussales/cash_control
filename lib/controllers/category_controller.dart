@@ -68,7 +68,6 @@ abstract class _CategoryController with Store {
         categoriesWithSpentThisMonth.add(c);
       }
     });
-    categoriesWithSpentThisMonth.sort();
   }
 
   bool isSelectedCategory(item) =>

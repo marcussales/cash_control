@@ -23,24 +23,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final CategoryController _categoryController = GetIt.I<CategoryController>();
-  final CardController _cardController = GetIt.I<CardController>();
-
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      getData();
-    });
-    super.initState();
-  }
-
-  getData() async {
-    if (!auth.user.newUser) {
-      await _categoryController.getCategories(limit: 10);
-      await _cardController.getCards();
-      await _cardController.getSavingsData();
-    }
-  }
+  final CategoryController categoryController = GetIt.I<CategoryController>();
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +33,10 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.fromLTRB(15, 60, 15, 10),
           child: Observer(builder: (_) {
             return Column(
-              children: [_buildHeader(), _buildBody()],
+              children: [
+                _buildHeader(),
+                _buildBody(),
+              ],
             );
           }),
         ),
@@ -65,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _newUserArea() {
     return Column(children: [
       SizedBox(height: 40),
-      FinancesAreaWidget(cardController: _cardController),
+      FinancesAreaWidget(cardController: cardController),
       SizedBox(height: 40),
       _buildNewCategoryArea(),
       SizedBox(height: 40),
@@ -76,13 +62,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _usualUserArea() {
     return Column(children: [
       SizedBox(height: 25),
-      FinancesAreaWidget(cardController: _cardController),
+      FinancesAreaWidget(cardController: cardController),
       SizedBox(height: 25),
       _buildMoreUsedArea(),
       SizedBox(height: 25),
-      CategoryAreaWidget(controller: _categoryController),
+      CategoryAreaWidget(controller: categoryController),
       SizedBox(height: 25),
-      CardSpentsAreaWidget(controller: _cardController)
+      CardSpentsAreaWidget(controller: cardController)
     ]);
   }
 
@@ -144,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: () {
                       navigatorPlus
                           .show(NewCategoryScreen())
-                          .then((value) => _categoryController.getCategories());
+                          .then((value) => categoryController.getCategories());
                     }),
               ),
             )

@@ -114,17 +114,19 @@ class CardApi {
     queryBuilder.whereEqualTo(keyObjectId, spent.paymentForm['cardId']);
     final response = await queryBuilder.query();
     if (response.success) {
-      final card = response.results.map((c) => mapParseToMonthSpent(c));
+      final cards = response.results.map((c) => mapParseToCard(c));
+
+      final currentMonthIdx = cards.first.monthSpents
+          .indexWhere((c) => c['month'] == spent.spentDate.month);
+
+      cards.first.monthSpents[currentMonthIdx]['totalValue'] =
+          cards.first.monthSpents[currentMonthIdx]['totalValue'] -
+              double.parse(spent.amount);
+
       try {
         final cardObject = ParseObject(keyCardTable);
         cardObject.objectId = spent.paymentForm['cardId'];
-        cardObject.set<dynamic>(
-            keyMonthSpents,
-            CardMonthSpentsModel(
-                    month: DateTime.now().month,
-                    totalValue: card.first.monthSpents.totalValue -
-                        double.parse(spent.amount))
-                .toJson());
+        cardObject.set<dynamic>(keyMonthSpents, cards.first.monthSpents);
         final response = await cardObject.save();
         if (!response.success) {
           return Future.error(ParseErrors.getDescription(response.error.code));
@@ -157,6 +159,18 @@ class CardApi {
             totalValue: currentMonthSpents.length > 0
                 ? currentMonthSpents.first['totalValue']
                 : 0.0),
+        cardId: card.get(keyObjectId));
+  }
+
+  CardModel mapParseToCard(card) {
+    return CardModel(
+        cardType: card.get(keyCardType).toString(),
+        cardBank: card.get(keyCardBank),
+        cardName: card.get(keyCardName),
+        ownerName: card.get(keyCardOwnerName),
+        spentGoal: card.get(keySpentGoal),
+        invoicePaid: card.get(keyInvoicePaid),
+        monthSpents: card.get(keyMonthSpents),
         cardId: card.get(keyObjectId));
   }
 }

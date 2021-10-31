@@ -1,6 +1,7 @@
 import 'package:cash_control/controllers/card_controller.dart';
 import 'package:cash_control/controllers/spent_controller.dart';
 import 'package:cash_control/models/CardModel.dart';
+import 'package:cash_control/shared/global.dart';
 import 'package:cash_control/util/colors_util.dart';
 import 'package:cash_control/widget/card_item_widget.dart';
 import 'package:flutter/material.dart';
@@ -10,14 +11,10 @@ import 'package:flutter_plus/flutter_plus.dart';
 class CardListWidget extends StatelessWidget {
   final List<CardModel> cards;
   final bool isSelectable;
-  final CardController controller;
   final SpentController spentController;
 
   const CardListWidget(
-      {this.cards,
-      this.isSelectable = false,
-      this.controller,
-      this.spentController});
+      {this.cards, this.isSelectable = false, this.spentController});
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +36,10 @@ class CardListWidget extends StatelessWidget {
               itemCount: cards.length ?? 10,
               itemBuilder: (_, index) {
                 return CardItemWidget(
-                  card: controller.cards[index],
-                  controller: controller,
+                  card: cards[index],
                   isSelectable: isSelectable,
-                  callbackSelectItem: (item) =>
-                      spentController.selectCardSpent(controller.cards[index]),
+                  callbackSelectItem: (item) => spentController
+                      .selectCardSpent(cardController.cards[index]),
                   isSelectedItem: (item) =>
                       spentController.isSelectedCard(item),
                 );

@@ -29,7 +29,8 @@ enum MonthsEnum {
 
 abstract class _SpentController with Store {
   _SpentController() {
-    reaction((_) => removeSpent, (removeSpent) => getSpents());
+    reaction((_) => updateSpentsStatus,
+        (updateSpents) => {getSpents(), cardController.getCards()});
   }
 
   SpentApi _api = SpentApi();
@@ -62,16 +63,16 @@ abstract class _SpentController with Store {
   bool positiveBalance = false;
 
   @observable
-  bool removeSpent = false;
+  bool updateSpentsStatus = false;
 
   @observable
   CategoryModel selectedCategory;
 
   @action
-  CategoryModel updateSelectedCategory(value) => selectedCategory = value;
+  bool changeUpdateSpentStatus() => updateSpentsStatus = !updateSpentsStatus;
 
   @action
-  bool isRemovingSpent(value) => removeSpent = value;
+  CategoryModel updateSelectedCategory(value) => selectedCategory = value;
 
   @action
   bool updateSearch(value) => emptySearch = value;
@@ -79,9 +80,9 @@ abstract class _SpentController with Store {
   @action
   Future<void> registerSpent(SpentModel spent, Function callback) async {
     await _api.saveSpent(spent);
-    isRemovingSpent(true);
     categoryController.selectedCategorySpent = CategoryModel();
     callback.call();
+    changeUpdateSpentStatus();
   }
 
   @action
@@ -120,7 +121,7 @@ abstract class _SpentController with Store {
   }
 
   @action
-  bool isPositiveBalance(value1, value2) => positiveBalance = value1 < value2;
+  bool isPositiveBalance({value1, value2}) => positiveBalance = value1 < value2;
 
   @action
   Future<void> searchSpent({String search}) async {
@@ -151,7 +152,7 @@ abstract class _SpentController with Store {
     await _api.delete(spent: spent);
     await _cardApi.removeSpentFromCard(spent: spent);
     loading.updateLoading(false);
-    isRemovingSpent(true);
+    changeUpdateSpentStatus();
   }
 
   @action
@@ -164,16 +165,15 @@ abstract class _SpentController with Store {
       cardSpent != null ? cardSpent.cardId == item.cardId : false;
 
   bool canRegisterSpent() {
-    return categoryController.categoriesList.isEmpty &&
-        cardController.cards.isEmpty;
+    return hasCards() && hasCategories();
   }
 
   bool hasCategories() {
-    return categoryController.categoriesList == 0;
+    return categoryController.categoriesList.isNotEmpty;
   }
 
   bool hasCards() {
-    return cardController.cards.length == 0;
+    return cardController.cards.isNotEmpty;
   }
 
   String cantRegisterSpentMessage() {

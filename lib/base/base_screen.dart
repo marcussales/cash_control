@@ -2,6 +2,7 @@ import 'package:cash_control/screens/home/home_screen.dart';
 import 'package:cash_control/screens/login/login_screen.dart';
 import 'package:cash_control/screens/my_cards/my_cards_screen.dart';
 import 'package:cash_control/screens/my_cards/new_card_screen.dart';
+import 'package:cash_control/screens/no_signal/no_signal.screen.dart';
 import 'package:cash_control/screens/perfil/profile_screen.dart';
 import 'package:cash_control/screens/spents/my_spents_screen.dart';
 import 'package:cash_control/screens/perfil/my_data_screen.dart';
@@ -25,6 +26,23 @@ class _BaseScreenState extends State<BaseScreen> {
     MySpentsScreen(),
     ProfileScreen()
   ];
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      getData();
+    });
+    super.initState();
+  }
+
+  getData() async {
+    if (!auth.user.newUser) {
+      await categoryController.getCategories(limit: 10);
+      await cardController.getCards();
+      await cardController.getSavingsData();
+      await spentController.getSpents();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

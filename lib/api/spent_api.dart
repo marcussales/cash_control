@@ -1,5 +1,3 @@
-import 'package:cash_control/controllers/card_controller.dart';
-import 'package:cash_control/controllers/category_controller.dart';
 import 'package:cash_control/models/CategoryModel.dart';
 import 'package:cash_control/models/SpentModel.dart';
 import 'package:cash_control/shared/global.dart';
@@ -8,9 +6,6 @@ import 'package:cash_control/shared/table_keys.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 class SpentApi {
-  CardController _cardController = CardController();
-  CategoryController _categoryController = CategoryController();
-
   Future<void> saveSpent(SpentModel spent) async {
     try {
       final spentObject = ParseObject(keySpentTable);
@@ -27,7 +22,7 @@ class SpentApi {
       if (!response.success) {
         return Future.error(ParseErrors.getDescription(response.error.code));
       } else {
-        await _cardController.updateCardSpents(
+        await cardController.updateCardSpents(
             cardId: spent.card.cardId,
             spentValue: double.parse(spent.amount),
             spentMonth: spent.spentDate.month);
@@ -68,6 +63,7 @@ class SpentApi {
     final queryBuilder = QueryBuilder(ParseObject(keySpentTable))
       ..orderByDescending(keySpentDate);
     queryBuilder.whereEqualTo(keySpentcategoryId, category.objectId);
+    queryBuilder.whereEqualTo(keySpentMonth, DateTime.now());
     final response = await queryBuilder.query();
     if (response.success && response.results != null) {
       return response.results.map((e) => mapParseToSpent(e)).toList();

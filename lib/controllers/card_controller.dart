@@ -23,7 +23,7 @@ class CardController = _CardController with _$CardController;
 
 abstract class _CardController with Store {
   _CardController() {
-    reaction((_) => updateCards, (removeSpent) => getCards());
+    reaction((_) => updateCards, (updateCards) => getCards());
   }
   CardApi _cardApi = CardApi();
   UserController _userController = UserController();
@@ -99,10 +99,10 @@ abstract class _CardController with Store {
   Future saveCard(String name, int typeId, int bankId, String spentGoal,
       Function callback) async {
     var cardName = '${typeCards[typeId].cardType} - ${banks[bankId].bankName}';
-    isUpdatingCards(true);
     await _cardApi.saveCard(
         name, typeId, bankId, cardName.toUpperCase(), spentGoal);
     callback.call();
+    isUpdatingCards(true);
   }
 
   Future updateCardSpents(

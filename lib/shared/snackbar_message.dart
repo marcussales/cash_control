@@ -4,54 +4,15 @@ import 'package:flutter_plus/flutter_plus.dart';
 
 class SnackBarMessage {
   showMessageRequiredFields() {
-    snackBarPlus.show(
-      backgroundColor: ColorsUtil.vermelhoEscuro,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TextPlus(
-            'Preencha os campos obrigatórios',
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-          ),
-        ],
-      ),
-    );
+    errorMsg('Preencha os campos obrigatórios');
   }
 
-  errorMsg(String message) {
-    snackBarPlus.show(
-      backgroundColor: ColorsUtil.vermelhoEscuro,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TextPlus(
-            message,
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-          ),
-        ],
-      ),
-    );
+  errorMsg(String title) {
+    showMessage(title: title, bgColor: ColorsUtil.vermelhoEscuro);
   }
 
   showSucessMessage(String title) {
-    snackBarPlus.show(
-      backgroundColor: ColorsUtil.verdeSucesso,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TextPlus(
-            title,
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-          ),
-        ],
-      ),
-    );
+    showMessage(title: title, bgColor: ColorsUtil.verdeSucesso);
   }
 
   showMessage({String title, Color txtColor, Color bgColor}) {
@@ -70,4 +31,5 @@ class SnackBarMessage {
       ),
     );
   }
+
 }

@@ -11,15 +11,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Meu perfil',
-        showBackButton: false,
-        actionIcon: Icons.meeting_room,
-        callback: () async {
-          await auth.logout();
-        },
-        showAction: true,
-      ),
+      appBar: _buildAppBar(),
       body: SingleChildScrollView(
         child: ContainerPlus(
             alignment: Alignment.center,
@@ -29,9 +21,25 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
+  CustomAppBar _buildAppBar() {
+    return CustomAppBar(
+      title: 'Meu perfil',
+      showBackButton: false,
+      actionIcon: Icons.meeting_room,
+      callback: () async {
+        await auth.logout();
+      },
+      showAction: true,
+    );
+  }
+
   Column _buildBody() {
     return Column(
-      children: [_buildPhotoAndName(), _buildOptions(), _buildVersionTxt()],
+      children: [
+        _buildPhotoAndName(),
+        _buildOptions(),
+        _buildVersionTxt(),
+      ],
     );
   }
 

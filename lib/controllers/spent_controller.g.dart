@@ -55,18 +55,19 @@ mixin _$SpentController on _SpentController, Store {
     });
   }
 
-  final _$removeSpentAtom = Atom(name: '_SpentController.removeSpent');
+  final _$updateSpentsStatusAtom =
+      Atom(name: '_SpentController.updateSpentsStatus');
 
   @override
-  bool get removeSpent {
-    _$removeSpentAtom.reportRead();
-    return super.removeSpent;
+  bool get updateSpentsStatus {
+    _$updateSpentsStatusAtom.reportRead();
+    return super.updateSpentsStatus;
   }
 
   @override
-  set removeSpent(bool value) {
-    _$removeSpentAtom.reportWrite(value, super.removeSpent, () {
-      super.removeSpent = value;
+  set updateSpentsStatus(bool value) {
+    _$updateSpentsStatusAtom.reportWrite(value, super.updateSpentsStatus, () {
+      super.updateSpentsStatus = value;
     });
   }
 
@@ -154,22 +155,22 @@ mixin _$SpentController on _SpentController, Store {
       ActionController(name: '_SpentController');
 
   @override
-  CategoryModel updateSelectedCategory(dynamic value) {
+  bool changeUpdateSpentStatus() {
     final _$actionInfo = _$_SpentControllerActionController.startAction(
-        name: '_SpentController.updateSelectedCategory');
+        name: '_SpentController.changeUpdateSpentStatus');
     try {
-      return super.updateSelectedCategory(value);
+      return super.changeUpdateSpentStatus();
     } finally {
       _$_SpentControllerActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  bool isRemovingSpent(dynamic value) {
+  CategoryModel updateSelectedCategory(dynamic value) {
     final _$actionInfo = _$_SpentControllerActionController.startAction(
-        name: '_SpentController.isRemovingSpent');
+        name: '_SpentController.updateSelectedCategory');
     try {
-      return super.isRemovingSpent(value);
+      return super.updateSelectedCategory(value);
     } finally {
       _$_SpentControllerActionController.endAction(_$actionInfo);
     }
@@ -209,11 +210,11 @@ mixin _$SpentController on _SpentController, Store {
   }
 
   @override
-  bool isPositiveBalance(dynamic value1, dynamic value2) {
+  bool isPositiveBalance({dynamic value1, dynamic value2}) {
     final _$actionInfo = _$_SpentControllerActionController.startAction(
         name: '_SpentController.isPositiveBalance');
     try {
-      return super.isPositiveBalance(value1, value2);
+      return super.isPositiveBalance(value1: value1, value2: value2);
     } finally {
       _$_SpentControllerActionController.endAction(_$actionInfo);
     }
@@ -236,7 +237,7 @@ mixin _$SpentController on _SpentController, Store {
 emptySearch: ${emptySearch},
 categorySpentsValue: ${categorySpentsValue},
 positiveBalance: ${positiveBalance},
-removeSpent: ${removeSpent},
+updateSpentsStatus: ${updateSpentsStatus},
 selectedCategory: ${selectedCategory},
 cardSpent: ${cardSpent}
     ''';

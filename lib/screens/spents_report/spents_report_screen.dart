@@ -193,7 +193,6 @@ class _SpentsReportScreenState extends State<SpentsReportScreen> {
                       ),
                       CardItemWidget(
                         card: cardController.moreEconomicCard(),
-                        controller: cardController,
                         callbackSelectItem: (item) {},
                         isSelectedItem: (item) => true,
                         isSelectable: false,

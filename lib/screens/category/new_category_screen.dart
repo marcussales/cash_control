@@ -18,8 +18,8 @@ class NewCategoryScreen extends StatefulWidget {
 class _NewCategoryScreenState extends State<NewCategoryScreen> {
   final IconsController iconsController = IconsController();
   final CategoryController _categoryController = CategoryController();
-  final txtTitulo = TextEditingController();
-  final txtMetaGastoMensal = TextEditingController();
+  final TextEditingController txtTitulo = TextEditingController();
+  final TextEditingController txtMetaGastoMensal = TextEditingController();
 
   @override
   void initState() {
@@ -33,7 +33,8 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       appBar: CustomAppBar(title: 'Criar categoria'),
       body: SingleChildScrollView(
         child: ContainerPlus(
-          padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
+          height: 500,
+          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
           child: Observer(builder: (_) {
             return _buildCategoryFields();
           }),
@@ -45,6 +46,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   Widget _buildCategoryFields() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         FormFieldWidget(
           title: 'Titulo',
@@ -52,28 +54,14 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
           onlyNumbers: false,
           controller: txtTitulo,
         ),
-        SizedBox(
-          height: 25,
-        ),
         FormFieldWidget(
           title: 'Meta de gasto mensal',
           isCurrency: true,
           onlyNumbers: true,
           controller: txtMetaGastoMensal,
         ),
-        SizedBox(
-          height: 25,
-        ),
-        TextPlus(
-          'Selecione uma imagem',
-          fontSize: 17,
-          color: ColorsUtil.verdeEscuro,
-        ),
-        SizedBox(
-          height: 8,
-        ),
         IconsListWidget(controller: iconsController),
-        SizedBox(height: 80),
+        SizedBox(height: 40),
         ContainerPlus(
             width: 500,
             child: ButtonWidget(

@@ -44,7 +44,7 @@ class CardTile extends StatelessWidget {
     return ContainerPlus(
       padding: EdgeInsets.fromLTRB(20, 10, 20, 28),
       radius: RadiusPlus.all(12),
-      width: 140,
+      width: 145,
       height: 90,
       gradient: GradientPlus.linear(
         colors: [

@@ -1,4 +1,3 @@
-import 'package:cash_control/controllers/card_controller.dart';
 import 'package:cash_control/models/CardModel.dart';
 import 'package:cash_control/shared/global.dart';
 import 'package:cash_control/util/colors_util.dart';
@@ -11,13 +10,11 @@ class CardItemWidget extends StatelessWidget {
   final bool isSelectable;
   final Function(dynamic) callbackSelectItem;
   final Function(dynamic) isSelectedItem;
-  final CardController controller;
   final CardModel card;
   const CardItemWidget(
       {this.isSelectable,
       this.callbackSelectItem,
       this.isSelectedItem,
-      this.controller,
       this.card});
 
   @override

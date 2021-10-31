@@ -20,7 +20,6 @@ class SpentTile extends StatelessWidget {
           padding: EdgeInsets.fromLTRB(0, 15, 5, 15),
           onTap: () => navigatorPlus.show(SpentScreen(
                 spent: spent,
-                controller: controller,
               )),
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [

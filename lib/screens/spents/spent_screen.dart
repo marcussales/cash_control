@@ -17,6 +17,7 @@ import 'package:cash_control/widget/category_list_widget.dart';
 import 'package:cash_control/widget/custom_app_bar.dart';
 import 'package:cash_control/widget/form_field_widget.dart';
 import 'package:cash_control/widget/no_result_widget.dart';
+import 'package:cash_control/widget/save_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_plus/flutter_plus.dart';
@@ -24,16 +25,14 @@ import 'package:cash_control/util/extensions.dart';
 
 class SpentScreen extends StatefulWidget {
   final SpentModel spent;
-  final SpentController controller;
 
-  const SpentScreen({this.spent, this.controller});
+  const SpentScreen({this.spent});
+
   @override
   _SpentScreenState createState() => _SpentScreenState();
 }
 
 class _SpentScreenState extends State<SpentScreen> {
-  final CardController _cardController = CardController();
-  SpentController _spentController;
   final TextEditingController txtTitleController = TextEditingController();
   final TextEditingController txtDateController =
       TextEditingController(text: DateTime.now().formattedDate());
@@ -44,50 +43,14 @@ class _SpentScreenState extends State<SpentScreen> {
 
   @override
   void initState() {
-    _spentController =
-        widget.controller != null ? widget.controller : spentController;
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _cardController.getCards();
-      await categoryController.getCategories();
-      categoryController.resetSelectedCategory();
-      if (widget.spent != null) {
-        txtTitleController.text = widget.spent.spentTitle;
-        txtDateController.text = widget.spent.spentDate.formattedDate();
-        txtValorController.text = widget.spent.amount;
-        categorySpent.objectId = widget.spent.categoryId;
-        categoryController.selectCategorySpent(categorySpent);
-        cardSpent = _cardController.cards
-            .firstWhere((c) => c.cardId == widget.spent.paymentForm['cardId']);
-        widget.controller.selectCardSpent(cardSpent);
-      }
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => setData());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBar(
-          title: widget.spent != null ? 'Editar gasto' : 'Novo gasto',
-          showBackButton: pagesStore.page != Pages.NEW_SPENT.index,
-          showAction: widget.spent != null,
-          actionIcon: Icons.delete_forever,
-          callback: () {
-            dialogPlus.show(
-              child: DeleteSpentDialog(
-                  spent: widget.spent,
-                  spentController: _spentController,
-                  callBack: () {
-                    navigatorPlus.back(result: true);
-                    SnackBarMessage()
-                        .showSucessMessage('Gasto removido com sucesso!');
-                  }),
-              barrierColor: Colors.black.withOpacity(0.7),
-              radius: RadiusPlus.all(20),
-              closeKeyboardWhenOpen: true,
-            );
-          },
-        ),
+        appBar: _buildAppBar(),
         body: SingleChildScrollView(
           child: ContainerPlus(
             padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
@@ -98,50 +61,70 @@ class _SpentScreenState extends State<SpentScreen> {
         ));
   }
 
+  CustomAppBar _buildAppBar() {
+    return CustomAppBar(
+      title: widget.spent != null ? 'Editar gasto' : 'Novo gasto',
+      showBackButton: pagesStore.page != Pages.NEW_SPENT.index,
+      showAction: widget.spent != null,
+      actionIcon: Icons.delete_forever,
+      callback: () {
+        dialogPlus.show(
+          child: DeleteSpentDialog(
+              spent: widget.spent,
+              spentController: spentController,
+              callBack: () {
+                navigatorPlus.back(result: true);
+                SnackBarMessage()
+                    .showSucessMessage('Gasto removido com sucesso!');
+              }),
+          barrierColor: Colors.black.withOpacity(0.7),
+          radius: RadiusPlus.all(20),
+          closeKeyboardWhenOpen: true,
+        );
+      },
+    );
+  }
+
+  setData() {
+    cardController.resetSelecteds();
+    spentController.selectCardSpent(null);
+    spentController.updateSelectedCategory(categorySpent);
+    if (widget.spent != null) {
+      txtTitleController.text = widget.spent.spentTitle;
+      txtDateController.text = widget.spent.spentDate.formattedDate();
+      txtValorController.text =
+          widget.spent.amount.numToFormattedMoney(withoutSymbol: true);
+      categorySpent.objectId = widget.spent.categoryId;
+      categoryController.selectCategorySpent(categorySpent);
+      cardSpent = cardController.cards
+          .firstWhere((c) => c.cardId == widget.spent.paymentForm['cardId']);
+      spentController.selectCardSpent(cardSpent);
+    }
+  }
+
   Widget _buildBody() {
     if (!spentController.canRegisterSpent()) {
-      return Container(
-          child: Column(children: [
-        NoResultWidget(message: spentController.cantRegisterSpentMessage()),
-        SizedBox(height: 50),
-        Row(
-          children: [
-            spentController.hasCards()
-                ? Expanded(
-                    child: ContainerPlus(
-                      skeleton:
-                          SkeletonPlus.automatic(enabled: loading.isLoading),
-                      radius: RadiusPlus.all(15),
-                      child: ButtonWidget(
-                          text: 'Registrar cartão',
-                          onPressed: () {
-                            navigatorPlus.show(NewCardScreen(
-                              cardController: cardController,
-                            ));
-                          }),
-                    ),
-                  )
-                : SizedBox.shrink(),
-            SizedBox(width: 10),
-            spentController.hasCategories()
-                ? Expanded(
-                    child: ContainerPlus(
-                      skeleton:
-                          SkeletonPlus.automatic(enabled: loading.isLoading),
-                      radius: RadiusPlus.all(15),
-                      child: ButtonWidget(
-                          text: 'Registrar categoria',
-                          onPressed: () {
-                            navigatorPlus.show(NewCategoryScreen());
-                          }),
-                    ),
-                  )
-                : SizedBox.shrink()
-          ],
-        ),
-      ]));
+      return _buildCantRegisterSpent();
     }
+    return _buildRegisterSpentForm();
+  }
 
+  Widget _buildCantRegisterSpent() {
+    return Container(
+        child: Column(children: [
+      NoResultWidget(message: spentController.cantRegisterSpentMessage()),
+      SizedBox(height: 50),
+      Row(
+        children: [
+          _buildRegisterCardArea(),
+          SizedBox(width: 10),
+          _buildRegisterCategoryArea()
+        ],
+      ),
+    ]));
+  }
+
+  Widget _buildRegisterSpentForm() {
     return Container(
       child: Column(
         children: [
@@ -150,60 +133,18 @@ class _SpentScreenState extends State<SpentScreen> {
             controller: txtTitleController,
           ),
           SizedBox(height: 25),
-          Row(
-            children: [
-              Expanded(
-                child: FormFieldWidget(
-                  title: 'Data',
-                  controller: txtDateController,
-                  mask: '##/##/####',
-                  onlyNumbers: true,
-                  isDate: true,
-                ),
-              ),
-              SizedBox(width: 20),
-              Expanded(
-                child: FormFieldWidget(
-                  title: 'Valor',
-                  isCurrency: true,
-                  onlyNumbers: true,
-                  controller: txtValorController,
-                ),
-              ),
-            ],
-          ),
+          _buildDateAndValueArea(),
           SizedBox(height: 25),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextPlus(
-                'Selecione a categoria',
-                fontSize: 17,
-                color: ColorsUtil.verdeEscuro,
-              ),
-              SizedBox(height: 8),
-              CategoryListWidget(
-                isSelectable: true,
-                controller: categoryController,
-                isSelectedItem: (item) {
-                  return categoryController.isSelectedCategory(item);
-                },
-                callbackSelectItem: (item) {
-                  categoryController.selectCategorySpent(item);
-                },
-              )
-            ],
-          ),
+          _buildCategoryArea(),
           SizedBox(height: 25),
           CardListWidget(
-            cards: _cardController.cards,
+            cards: cardController.cards,
             isSelectable: true,
-            controller: _cardController,
-            spentController: _spentController,
+            spentController: spentController,
           ),
           SizedBox(height: 80),
-          ButtonWidget(
-            text: 'REGISTRAR GASTO',
+          SaveButtonWidget(
+            text: widget.spent == null ? 'REGISTRAR GASTO' : 'EDITAR GASTO',
             onPressed: _registerSpent,
           )
         ],
@@ -211,27 +152,110 @@ class _SpentScreenState extends State<SpentScreen> {
     );
   }
 
-  _registerSpent() async {
-    var formatedAmount = double.parse(
-        txtValorController.text.replaceFirst('.', '').replaceAll(',', '.'));
+  Row _buildDateAndValueArea() {
+    return Row(
+      children: [
+        Expanded(
+          child: FormFieldWidget(
+            title: 'Data',
+            controller: txtDateController,
+            mask: '##/##/####',
+            onlyNumbers: true,
+            isDate: true,
+          ),
+        ),
+        SizedBox(width: 20),
+        Expanded(
+          child: FormFieldWidget(
+            title: 'Valor',
+            isCurrency: true,
+            onlyNumbers: true,
+            controller: txtValorController,
+          ),
+        ),
+      ],
+    );
+  }
 
-    _spentController.cardSpent.cardBank = _cardController.banks
+  Column _buildCategoryArea() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextPlus(
+          'Selecione a categoria',
+          fontSize: 17,
+          color: ColorsUtil.verdeEscuro,
+        ),
+        SizedBox(height: 8),
+        CategoryListWidget(
+          isSelectable: true,
+          controller: categoryController,
+          isSelectedItem: (item) {
+            return categoryController.isSelectedCategory(item);
+          },
+          callbackSelectItem: (item) {
+            categoryController.selectCategorySpent(item);
+          },
+        )
+      ],
+    );
+  }
+
+  Widget _buildRegisterCategoryArea() {
+    return spentController.hasCategories()
+        ? Expanded(
+            child: ContainerPlus(
+              skeleton: SkeletonPlus.automatic(enabled: loading.isLoading),
+              radius: RadiusPlus.all(15),
+              child: ButtonWidget(
+                  text: 'Registrar categoria',
+                  onPressed: () {
+                    navigatorPlus.show(NewCategoryScreen());
+                  }),
+            ),
+          )
+        : SizedBox.shrink();
+  }
+
+  Widget _buildRegisterCardArea() {
+    return spentController.hasCards()
+        ? Expanded(
+            child: ContainerPlus(
+              skeleton: SkeletonPlus.automatic(enabled: loading.isLoading),
+              radius: RadiusPlus.all(15),
+              child: ButtonWidget(
+                  text: 'Registrar cartão',
+                  onPressed: () {
+                    navigatorPlus.show(NewCardScreen(
+                      cardController: cardController,
+                    ));
+                  }),
+            ),
+          )
+        : SizedBox.shrink();
+  }
+
+  _registerSpent() async {
+    var formatedAmount =
+        double.parse(txtValorController.text.formatStringToReal());
+
+    spentController.cardSpent.cardBank = cardController.banks
         .firstWhere((b) =>
             b.bankName.toUpperCase() ==
-            _spentController.cardSpent.cardName.split('-')[1].trim())
+            spentController.cardSpent.cardName.split('-')[1].trim())
         .bankId;
 
     if (txtDateController.text.isEmpty ||
         txtTitleController.text.isEmpty ||
         txtValorController.text.isEmpty ||
         categoryController.selectedCategorySpent.objectId == null ||
-        _spentController.cardSpent.cardId == null) {
-      SnackBarMessage().showMessageRequiredFields();
+        spentController.cardSpent.cardId == null) {
+      SnackBarMessage().errorMsg('Preencha os campos obrigatórios');
       return;
     }
 
-    if (_spentController.cardSpent.spentGoal <
-            (_spentController.cardSpent.monthSpents.totalValue +
+    if (spentController.cardSpent.spentGoal <
+            (spentController.cardSpent.monthSpents.totalValue +
                 formatedAmount) &&
         !confirmSpent) {
       dialogPlus.show(
@@ -252,12 +276,12 @@ class _SpentScreenState extends State<SpentScreen> {
         spentTitle: txtTitleController.text,
         spentDate: txtDateController.text.stringToDateTimeObject(),
         amount: formatedAmount.toString(),
-        card: _spentController.cardSpent,
+        card: spentController.cardSpent,
         categoryId: categoryController.selectedCategorySpent.objectId);
     if (widget.spent != null) newSpent.spentId = widget.spent.spentId;
-    _spentController
+    spentController
         .updateSelectedCategory(categoryController.selectedCategorySpent);
-    await _spentController.registerSpent(newSpent, registerSucess);
+    await spentController.registerSpent(newSpent, registerSucess);
   }
 
   registerSucess() {

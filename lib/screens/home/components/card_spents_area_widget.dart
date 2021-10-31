@@ -34,7 +34,6 @@ class CardSpentsAreaWidget extends StatelessWidget {
               itemCount: controller.cards.length,
               itemBuilder: (_, index) {
                 return CardItemWidget(
-                    controller: controller,
                     isSelectable: false,
                     callbackSelectItem: (item) {},
                     isSelectedItem: (item) => true,
