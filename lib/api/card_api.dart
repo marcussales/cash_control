@@ -34,7 +34,7 @@ class CardApi {
 
   Future<List<CardModel>> getUserCards() async {
     final queryBuilder = QueryBuilder(ParseObject(keyCardTable))
-      ..orderByAscending(keyCardBank);
+      ..orderByDescending(keyVarUpdatedAt);
     queryBuilder.whereEqualTo(keyCardOwner, auth.user.id);
 
     final response = await queryBuilder.query();

@@ -5,6 +5,7 @@ import 'package:cash_control/screens/category/new_category_screen.dart';
 import 'package:cash_control/screens/home/components/card_spents_area_widget.dart';
 import 'package:cash_control/screens/home/components/category_area_widget.dart';
 import 'package:cash_control/screens/home/components/finances_area_widget.dart';
+import 'package:cash_control/screens/loading/loading_screen.dart';
 import 'package:cash_control/screens/perfil/my_data_screen.dart';
 import 'package:cash_control/screens/perfil/profile_screen.dart';
 import 'package:cash_control/screens/spents/spent_screen.dart';
@@ -23,25 +24,25 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final CategoryController categoryController = GetIt.I<CategoryController>();
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: ContainerPlus(
-          padding: EdgeInsets.fromLTRB(15, 60, 15, 10),
-          child: Observer(builder: (_) {
-            return Column(
-              children: [
-                _buildHeader(),
-                _buildBody(),
-              ],
-            );
-          }),
-        ),
-      ),
-    );
+    return LoadingScreen(
+        key: Key('HomeScreen'),
+        body: Scaffold(
+          body: SingleChildScrollView(
+            child: ContainerPlus(
+              padding: EdgeInsets.fromLTRB(15, 60, 15, 10),
+              child: Observer(builder: (_) {
+                return Column(
+                  children: [
+                    _buildHeader(),
+                    _buildBody(),
+                  ],
+                );
+              }),
+            ),
+          ),
+        ));
   }
 
   Widget _buildBody() {

@@ -13,3 +13,4 @@ final PagesController pagesStore = getIt<PagesController>();
 final CategoryController categoryController = getIt<CategoryController>();
 final SpentController spentController = getIt<SpentController>();
 final CardController cardController = getIt<CardController>();
+final String apkVersion = 'Versão 1.0.1';

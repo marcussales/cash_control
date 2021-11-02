@@ -88,6 +88,7 @@ class _SpentScreenState extends State<SpentScreen> {
   setData() {
     cardController.resetSelecteds();
     spentController.selectCardSpent(null);
+    categoryController.resetSelectedCategory();
     spentController.updateSelectedCategory(categorySpent);
     if (widget.spent != null) {
       txtTitleController.text = widget.spent.spentTitle;

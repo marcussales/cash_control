@@ -136,7 +136,7 @@ class ProfileScreen extends StatelessWidget {
     return ContainerPlus(
       margin: EdgeInsets.only(top: 250),
       child: Text(
-        'Versão 1.0.0',
+        apkVersion,
         style: new TextStyle(
             fontSize: 16.0,
             fontWeight: FontWeight.bold,

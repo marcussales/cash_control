@@ -73,6 +73,11 @@ class CategoryApi {
     if (response.success) {
       final category = response.results;
       final categoryObject = ParseObject(keyCategoryTable);
+      if (category.first[keyMonthSpents] == null) {
+        category.first[keyMonthSpents] = [
+          {'month': DateTime.now().month, 'totalValue': 0.0}
+        ];
+      }
       final currentMonthIdx = category.first[keyMonthSpents]
           .indexWhere((c) => c['month'] == DateTime.now().month);
       final currentMonthSpents =
@@ -92,7 +97,7 @@ class CategoryApi {
       categoryObject.set<String>(keyUserId, auth.user.id);
       categoryObject.set<List>(keyMonthSpents, category.first['monthSpents']);
       final res = await categoryObject.save();
-      if (!response.success) {
+      if (!res.success) {
         return Future.error(ParseErrors.getDescription(response.error.code));
       } else {
         return [];

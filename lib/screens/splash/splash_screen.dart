@@ -9,9 +9,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  bool _visible = true;
-  Duration _duration = const Duration(milliseconds: 500);
-
   @override
   void initState() {
     super.initState();

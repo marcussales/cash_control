@@ -139,9 +139,13 @@ abstract class _CardController with Store {
     savingsValue = auth.user.monthIncome - totalCardSpents;
     int currentMonthSavingsIdx =
         auth.user.savings.indexWhere((s) => (s.month) == DateTime.now().month);
-    auth.user.savings[currentMonthSavingsIdx] =
-        UserSavingsModel(month: DateTime.now().month, savings: savingsValue);
-    _userController.saveUser();
+    if (currentMonthSavingsIdx != -1) {
+      auth.user.savings[currentMonthSavingsIdx] =
+          UserSavingsModel(month: DateTime.now().month, savings: savingsValue);
+      _userController.saveUser();
+    }
+    auth.user.savings
+        .add(UserSavingsModel(month: DateTime.now().month, savings: 0.0));
   }
 
   @action

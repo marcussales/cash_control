@@ -224,6 +224,7 @@ class _CategoryDetailsScreenState extends State<CategoryDetailsScreen> {
         itemBuilder: (_, index) {
           var item = spentController.categorySpents[index];
           return ContainerPlus(
+            onTap: () => navigatorPlus.show(SpentScreen(spent: item)),
             padding: EdgeInsets.all(20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -30,21 +30,20 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return
-        // LoadingScreen(
-        // key: Key('CategoryScreen'),
-        Scaffold(
-      appBar: CustomAppBar(title: 'Criar categoria'),
-      body: SingleChildScrollView(
-        child: ContainerPlus(
-          height: 500,
-          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-          child: Observer(builder: (_) {
-            return _buildCategoryFields();
-          }),
-        ),
-      ),
-    );
+    return LoadingScreen(
+        key: Key('CategoryScreen'),
+        body: Scaffold(
+          appBar: CustomAppBar(title: 'Criar categoria'),
+          body: SingleChildScrollView(
+            child: ContainerPlus(
+              height: 500,
+              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: Observer(builder: (_) {
+                return _buildCategoryFields();
+              }),
+            ),
+          ),
+        ));
   }
 
   Widget _buildCategoryFields() {

@@ -37,7 +37,7 @@ class _BaseScreenState extends State<BaseScreen> {
 
   getData() async {
     if (!auth.user.newUser) {
-      await categoryController.getCategories(limit: 10);
+      await categoryController.getCategories();
       await cardController.getCards();
       await cardController.getSavingsData();
       await spentController.getSpents();

@@ -1,5 +1,6 @@
 import 'package:cash_control/base/base_screen.dart';
 import 'package:cash_control/controllers/user_controller.dart';
+import 'package:cash_control/shared/global.dart';
 import 'package:cash_control/shared/snackbar_message.dart';
 import 'package:cash_control/util/colors_util.dart';
 import 'package:flutter/material.dart';
@@ -162,6 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
       var user = await _controller.loginOrSignUp(googleSignInAccount);
       if (user != null) {
         navigatorPlus.show(BaseScreen());
+        pagesStore.setPage(0);
       }
       return;
     } catch (error) {

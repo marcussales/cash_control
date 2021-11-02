@@ -7,13 +7,13 @@ import 'package:flutter_plus/flutter_plus.dart';
 class MenuItemWidget extends StatelessWidget {
   final String title;
   final Icon icon;
-  final int currentPage;
   final int page;
 
-  const MenuItemWidget({this.title, this.icon, this.currentPage, this.page});
+  const MenuItemWidget({this.title, this.icon, this.page});
 
   @override
   Widget build(BuildContext context) {
+    bool isCurrentPage = pagesStore.page == page;
     return ContainerPlus(
         onTap: () {
           pagesStore.setPage(page);
@@ -28,10 +28,9 @@ class MenuItemWidget extends StatelessWidget {
             ),
             TextPlus(
               title,
-              fontSize: currentPage == page ? 13 : 12,
-              fontWeight:
-                  currentPage == page ? FontWeight.w800 : FontWeight.normal,
-              color: currentPage == page ? ColorsUtil.verdeEscuro : Colors.grey,
+              fontSize: isCurrentPage ? 13 : 12,
+              fontWeight: isCurrentPage ? FontWeight.w800 : FontWeight.normal,
+              color: isCurrentPage ? ColorsUtil.verdeEscuro : Colors.grey,
             )
           ],
         ));
