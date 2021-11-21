@@ -28,7 +28,7 @@ class IconsListWidget extends StatelessWidget {
             return ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: controller.iconsList.length ?? 8,
-              itemBuilder: (_, index) {
+              itemBuilder: (_, int index) {
                 return IconTileWidget(
                   hasItens: controller.iconsList.length == 0,
                   icon: controller.iconsList[index],

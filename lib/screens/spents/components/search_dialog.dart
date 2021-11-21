@@ -10,7 +10,7 @@ class SearchDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      children: [
+      children: <Widget>[
         Positioned(
           top: 2,
           right: 10,
@@ -36,7 +36,7 @@ class SearchDialog extends StatelessWidget {
                         navigatorPlus.back(result: controller.text);
                       })),
               textInputAction: TextInputAction.search,
-              onSubmitted: (text) {
+              onSubmitted: (String text) {
                 Navigator.of(context).pop(text);
               },
               autofocus: true,

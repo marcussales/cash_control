@@ -10,8 +10,7 @@ import 'package:cash_control/util/extensions.dart';
 
 class SpentTile extends StatelessWidget {
   final SpentModel spent;
-  final SpentController controller;
-  const SpentTile({this.spent, this.controller});
+  const SpentTile({this.spent});
 
   @override
   Widget build(BuildContext context) {
@@ -21,54 +20,57 @@ class SpentTile extends StatelessWidget {
           onTap: () => navigatorPlus.show(SpentScreen(
                 spent: spent,
               )),
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Row(children: [
-              ContainerPlus(
-                skeleton: SkeletonPlus.automatic(enabled: loading.isLoading),
-                radius: RadiusPlus.all(10),
-                color: ColorsUtil.verdeSecundario,
-                width: 50,
-                height: 45,
-                alignment: Alignment.center,
-                child: TextPlus(
-                  spent.spentTitle.firstLetter.toUpperCase(),
-                  fontSize: 22,
-                  color: ColorsUtil.verdeEscuro,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              SizedBox(width: 18),
-              ContainerPlus(
-                skeleton: SkeletonPlus.automatic(enabled: loading.isLoading),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextPlus(
-                      spent.spentTitle,
-                      fontSize: 18,
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(children: <Widget>[
+                  ContainerPlus(
+                    skeleton:
+                        SkeletonPlus.automatic(enabled: loading.isLoading),
+                    radius: RadiusPlus.all(10),
+                    color: ColorsUtil.verdeSecundario,
+                    width: 50,
+                    height: 45,
+                    alignment: Alignment.center,
+                    child: TextPlus(
+                      spent.spentTitle.firstLetter.toUpperCase(),
+                      fontSize: 22,
                       color: ColorsUtil.verdeEscuro,
+                      fontWeight: FontWeight.w900,
                     ),
-                    TextPlus(
-                      '- ${formattedAmount()}',
-                      fontSize: 20,
-                      color: ColorsUtil.vermelhoEscuro,
-                      fontWeight: FontWeight.w800,
+                  ),
+                  SizedBox(width: 18),
+                  ContainerPlus(
+                    skeleton:
+                        SkeletonPlus.automatic(enabled: loading.isLoading),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        TextPlus(
+                          spent.spentTitle,
+                          fontSize: 18,
+                          color: ColorsUtil.verdeEscuro,
+                        ),
+                        TextPlus(
+                          '- ${formattedAmount()}',
+                          fontSize: 20,
+                          color: ColorsUtil.vermelhoEscuro,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            ]),
-            ContainerPlus(
-              skeleton: SkeletonPlus.automatic(enabled: loading.isLoading),
-              alignment: Alignment.centerRight,
-              child: Icon(
-                Icons.keyboard_arrow_right_outlined,
-                color: ColorsUtil.verdeClaro,
-                size: 28,
-              ),
-            )
-          ]));
+                  ),
+                ]),
+                ContainerPlus(
+                  skeleton: SkeletonPlus.automatic(enabled: loading.isLoading),
+                  alignment: Alignment.centerRight,
+                  child: Icon(
+                    Icons.keyboard_arrow_right_outlined,
+                    color: ColorsUtil.verdeClaro,
+                    size: 28,
+                  ),
+                )
+              ]));
     });
   }
 

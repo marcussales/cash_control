@@ -1,11 +1,13 @@
 import 'package:cash_control/controllers/card_controller.dart';
+import 'package:cash_control/screens/loading/loading_screen.dart';
 import 'package:cash_control/screens/my_cards/components/card_tile.dart';
-import 'package:cash_control/screens/my_cards/new_card_screen.dart';
+import 'package:cash_control/screens/my_cards/card_screen.dart';
 import 'package:cash_control/shared/global.dart';
 import 'package:cash_control/util/colors_util.dart';
-import 'package:cash_control/widget/button_widget.dart';
-import 'package:cash_control/widget/custom_app_bar.dart';
-import 'package:cash_control/widget/no_result_widget.dart';
+import 'package:cash_control/widgets/button_widget.dart';
+import 'package:cash_control/widgets/custom_app_bar.dart';
+import 'package:cash_control/widgets/custom_refresh_indicator.widget.dart';
+import 'package:cash_control/widgets/no_result_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_plus/flutter_plus.dart';
@@ -18,14 +20,17 @@ class MyCardsScreen extends StatefulWidget {
 class _MyCardsScreenState extends State<MyCardsScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(),
-      body: SingleChildScrollView(
-        child: ContainerPlus(
-            height: 700,
-            alignment: Alignment.center,
-            padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
-            child: _buildBody()),
+    return LoadingScreen(
+      key: Key('MyCardsScreen'),
+      body: Scaffold(
+        appBar: _buildAppBar(),
+        body: SingleChildScrollView(
+          child: ContainerPlus(
+              height: 700,
+              alignment: Alignment.center,
+              padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
+              child: _buildBody()),
+        ),
       ),
     );
   }
@@ -37,7 +42,7 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
       showBackButton: false,
       actionIcon: Icons.add,
       callback: () {
-        navigatorPlus.show(NewCardScreen(cardController: cardController));
+        navigatorPlus.show(CardScreen());
       },
     );
   }
@@ -58,25 +63,29 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
         SizedBox(height: 40),
         ButtonWidget(
           text: 'REGISTRAR NOVO CARTÃO',
-          onPressed: () => navigatorPlus.show(NewCardScreen()),
+          onPressed: () => navigatorPlus.show(CardScreen()),
         )
       ],
     );
   }
 
   Widget _buildCardList() {
-    return ListView.separated(
-      separatorBuilder: (_, __) {
-        return Divider(
-          height: 0.1,
-          color: ColorsUtil.verdeEscuro,
-        );
+    return CustomRefreshIndicator(
+      onRefresh: () {
+        cardController.getCards();
       },
-      itemCount: cardController.cards.length,
-      itemBuilder: (_, index) {
-        return CardTile(
-            card: cardController.cards[index], controller: cardController);
-      },
+      body: ListView.separated(
+        separatorBuilder: (_, __) {
+          return Divider(
+            height: 0.1,
+            color: ColorsUtil.verdeEscuro,
+          );
+        },
+        itemCount: cardController.cards.length,
+        itemBuilder: (_, index) {
+          return CardTile(card: cardController.cards[index]);
+        },
+      ),
     );
   }
 }

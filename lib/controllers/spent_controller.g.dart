@@ -71,6 +71,21 @@ mixin _$SpentController on _SpentController, Store {
     });
   }
 
+  final _$currentCardAtom = Atom(name: '_SpentController.currentCard');
+
+  @override
+  CardModel get currentCard {
+    _$currentCardAtom.reportRead();
+    return super.currentCard;
+  }
+
+  @override
+  set currentCard(CardModel value) {
+    _$currentCardAtom.reportWrite(value, super.currentCard, () {
+      super.currentCard = value;
+    });
+  }
+
   final _$selectedCategoryAtom =
       Atom(name: '_SpentController.selectedCategory');
 
@@ -106,9 +121,10 @@ mixin _$SpentController on _SpentController, Store {
       AsyncAction('_SpentController.registerSpent');
 
   @override
-  Future<void> registerSpent(SpentModel spent, Function callback) {
-    return _$registerSpentAsyncAction
-        .run(() => super.registerSpent(spent, callback));
+  Future<void> registerSpent(
+      {SpentModel spent, String diffValue, Function callback}) {
+    return _$registerSpentAsyncAction.run(() => super
+        .registerSpent(spent: spent, diffValue: diffValue, callback: callback));
   }
 
   final _$getSpentsAsyncAction = AsyncAction('_SpentController.getSpents');
@@ -166,6 +182,17 @@ mixin _$SpentController on _SpentController, Store {
   }
 
   @override
+  dynamic updateCurrentCard(CardModel card) {
+    final _$actionInfo = _$_SpentControllerActionController.startAction(
+        name: '_SpentController.updateCurrentCard');
+    try {
+      return super.updateCurrentCard(card);
+    } finally {
+      _$_SpentControllerActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   CategoryModel updateSelectedCategory(dynamic value) {
     final _$actionInfo = _$_SpentControllerActionController.startAction(
         name: '_SpentController.updateSelectedCategory');
@@ -199,29 +226,29 @@ mixin _$SpentController on _SpentController, Store {
   }
 
   @override
-  dynamic diffCategorySpents(dynamic value1, dynamic value2) {
+  dynamic diffCategorySpents(dynamic value) {
     final _$actionInfo = _$_SpentControllerActionController.startAction(
         name: '_SpentController.diffCategorySpents');
     try {
-      return super.diffCategorySpents(value1, value2);
+      return super.diffCategorySpents(value);
     } finally {
       _$_SpentControllerActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  bool isPositiveBalance({dynamic value1, dynamic value2}) {
+  bool isPositiveBalance({double value}) {
     final _$actionInfo = _$_SpentControllerActionController.startAction(
         name: '_SpentController.isPositiveBalance');
     try {
-      return super.isPositiveBalance(value1: value1, value2: value2);
+      return super.isPositiveBalance(value: value);
     } finally {
       _$_SpentControllerActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  CardModel selectCardSpent(dynamic c) {
+  CardModel selectCardSpent(CardModel c) {
     final _$actionInfo = _$_SpentControllerActionController.startAction(
         name: '_SpentController.selectCardSpent');
     try {
@@ -238,6 +265,7 @@ emptySearch: ${emptySearch},
 categorySpentsValue: ${categorySpentsValue},
 positiveBalance: ${positiveBalance},
 updateSpentsStatus: ${updateSpentsStatus},
+currentCard: ${currentCard},
 selectedCategory: ${selectedCategory},
 cardSpent: ${cardSpent}
     ''';

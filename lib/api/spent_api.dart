@@ -2,14 +2,14 @@ import 'package:cash_control/models/CategoryModel.dart';
 import 'package:cash_control/models/SpentModel.dart';
 import 'package:cash_control/shared/global.dart';
 import 'package:cash_control/shared/parse_errors.dart';
-import 'package:cash_control/shared/snackbar_message.dart';
+import 'package:cash_control/shared/dialog_message.dart';
 import 'package:cash_control/shared/table_keys.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 class SpentApi {
-  Future<void> saveSpent(SpentModel spent) async {
+  Future<void> saveSpent({SpentModel spent, String diffValue}) async {
     try {
-      final spentObject = ParseObject(keySpentTable);
+      ParseObject spentObject = ParseObject(keySpentTable);
       if (spent.spentId != null)
         spentObject.set<String>(keyObjectId, spent.spentId);
       spentObject.set<String>(keySpentTitle, spent.spentTitle);
@@ -19,13 +19,15 @@ class SpentApi {
       spentObject.set<String>(keySpentcategoryId, spent.categoryId);
       spentObject.set<String>(keySpentOwner, auth.user.id);
       spentObject.set<dynamic>(keyPaymentForm, spent.card);
-      final response = await spentObject.save();
+      ParseResponse response = await spentObject.save();
       if (!response.success) {
         return Future.error(ParseErrors.getDescription(response.error.code));
       } else {
         await cardController.updateCardSpents(
             cardId: spent.card.cardId,
-            spentValue: double.parse(spent.amount),
+            spentValue: diffValue == null
+                ? double.parse(spent.amount)
+                : -double.parse(diffValue),
             spentMonth: spent.spentDate.month);
         await categoryController.updateMonthSpent(
             id: categoryController.selectedCategorySpent.objectId,
@@ -56,8 +58,7 @@ class SpentApi {
       }
       return response.results.map((e) => mapParseToSpent(e)).toList();
     } else {
-      return SnackBarMessage()
-          .errorMsg(ParseErrors.getDescription(response.error.code));
+      DialogMessage.errorMsg(ParseErrors.getDescription(response.error.code));
     }
   }
 
@@ -87,8 +88,7 @@ class SpentApi {
       }
       return null;
     } else {
-      return SnackBarMessage()
-          .errorMsg(ParseErrors.getDescription(response.error.code));
+      DialogMessage.errorMsg(ParseErrors.getDescription(response.error.code));
     }
   }
 

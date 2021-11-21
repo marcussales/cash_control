@@ -1,6 +1,7 @@
 import 'package:cash_control/base/base_screen.dart';
 import 'package:cash_control/controllers/card_controller.dart';
 import 'package:cash_control/controllers/category_controller.dart';
+import 'package:cash_control/controllers/connectivity_controller.dart';
 import 'package:cash_control/controllers/icons_controller.dart';
 import 'package:cash_control/controllers/loading.controller.dart';
 import 'package:cash_control/controllers/user_controller.dart';
@@ -27,13 +28,15 @@ void main() async {
 }
 
 void _registerStores() {
-  GetIt.I.registerSingleton(UserController());
-  GetIt.I.registerSingleton(PagesController());
-  GetIt.I.registerSingleton(IconsController());
-  GetIt.I.registerSingleton(SpentController());
-  GetIt.I.registerSingleton(CardController());
-  GetIt.I.registerSingleton(LoadingController());
-  GetIt.I.registerSingleton(CategoryController());
+  final getIt = GetIt.I.registerSingleton;
+  getIt(UserController());
+  getIt(PagesController());
+  getIt(IconsController());
+  getIt(SpentController());
+  getIt(CardController());
+  getIt(LoadingController());
+  getIt(CategoryController());
+  getIt(ConnectivityController());
 }
 
 Future<void> initializeParse() async {

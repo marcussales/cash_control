@@ -18,16 +18,19 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return ContainerPlus(
       gradient: GradientPlus.linear(
-        colors: [
+        colors: <Color>[
           ColorsUtil.verdeSplashScreen,
           ColorsUtil.cinzaSplashScreen,
         ],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
+        begin: Alignment.centerLeft,
+        end: Alignment.bottomRight,
       ),
-      child: Image.asset(
-        'assets/images/splash.png',
-        height: 200,
+      child: SizedBox(
+        height: 50,
+        child: Image.asset(
+          'assets/images/splash.png',
+          height: 100,
+        ),
       ),
     );
   }

@@ -1,11 +1,12 @@
 import 'package:cash_control/controllers/user_controller.dart';
 import 'package:cash_control/shared/global.dart';
-import 'package:cash_control/shared/snackbar_message.dart';
+import 'package:cash_control/shared/dialog_message.dart';
 import 'package:cash_control/util/colors_util.dart';
-import 'package:cash_control/widget/button_widget.dart';
-import 'package:cash_control/widget/custom_app_bar.dart';
-import 'package:cash_control/widget/form_field_widget.dart';
-import 'package:cash_control/widget/profile_image_widget.dart';
+import 'package:cash_control/widgets/button_widget.dart';
+import 'package:cash_control/widgets/custom_app_bar.dart';
+import 'package:cash_control/widgets/form_field_widget.dart';
+import 'package:cash_control/widgets/profile_image_widget.dart';
+import 'package:cash_control/widgets/save_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_plus/flutter_plus.dart';
 import 'package:cash_control/util/extensions.dart';
@@ -16,7 +17,6 @@ class MyDataScreen extends StatefulWidget {
 }
 
 class _MyDataScreenState extends State<MyDataScreen> {
-  UserController _controller = UserController();
   TextEditingController txtMonthIncomeController = TextEditingController();
   TextEditingController txtGoalController = TextEditingController();
 
@@ -76,7 +76,7 @@ class _MyDataScreenState extends State<MyDataScreen> {
           controller: txtGoalController,
         ),
         SizedBox(height: 50),
-        ButtonWidget(
+        SaveButtonWidget(
           text: 'SALVAR DADOS',
           onPressed: () => _saveData(),
         )
@@ -87,20 +87,21 @@ class _MyDataScreenState extends State<MyDataScreen> {
   _saveData() async {
     if (auth.user.monthIncome.toString() == txtMonthIncomeController.text &&
         auth.user.spentGoal.toString() == txtGoalController.text) {
-      SnackBarMessage().showMessageRequiredFields();
+      DialogMessage.showMessageRequiredFields();
     }
 
-    var formattedMonthIncome = double.parse(txtMonthIncomeController.text
-        .replaceAll(',', '.')
-        .replaceFirst('.', ''));
-    var formattedGoal = double.parse(
-        txtGoalController.text.replaceAll(',', '.').replaceFirst('.', ''));
-    auth.user.spentGoal = formattedGoal;
-    auth.user.monthIncome = formattedMonthIncome;
-    await _controller.saveUser(callback: saveSucess());
+    var formattedMonthIncome =
+        double.parse(txtMonthIncomeController.text.formatStringToReal());
+    String formattedGoal = txtGoalController.text.formatStringToReal();
+    auth.user.spentGoal = double.parse(formattedGoal);
+    await auth.saveUser(
+      callback: saveSucess(),
+      incomeValue: formattedMonthIncome,
+    );
   }
 
   saveSucess() {
-    SnackBarMessage().showSucessMessage('Dados alterados com sucesso!');
+    DialogMessage.showSucessMessage('Dados alterados com sucesso!');
+    cardController.updateCardData();
   }
 }

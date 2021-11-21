@@ -2,19 +2,23 @@ import 'package:cash_control/models/CardSpentModel.dart';
 import 'package:cash_control/models/CategoryModel.dart';
 import 'package:cash_control/shared/global.dart';
 import 'package:cash_control/shared/parse_errors.dart';
-import 'package:cash_control/shared/snackbar_message.dart';
+import 'package:cash_control/shared/dialog_message.dart';
 import 'package:cash_control/shared/table_keys.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 class CategoryApi {
-  Future<void> saveCategory(String title, String spentGoal, String icon) async {
+  Future<void> saveCategory(
+      String title, String spentGoal, String icon, String id) async {
     try {
-      final categoryObject = ParseObject(keyCategoryTable);
+      ParseObject categoryObject = ParseObject(keyCategoryTable);
+      if (id != null) {
+        categoryObject.set<String>(keyObjectId, id);
+      }
       categoryObject.set<String>(keyCategoryIcon, icon);
       categoryObject.set<String>(keyCategoryTitle, title);
       categoryObject.set<String>(keyCategorySpentGoal, spentGoal);
       categoryObject.set<String>(keyUserId, auth.user.id);
-      final response = await categoryObject.save();
+      ParseResponse response = await categoryObject.save();
       if (!response.success) {
         return Future.error(ParseErrors.getDescription(response.error.code));
       } else {
@@ -26,8 +30,9 @@ class CategoryApi {
   }
 
   Future<List<CategoryModel>> getCategories({int limit}) async {
-    final queryBuilder = QueryBuilder(ParseObject(keyCategoryTable))
-      ..orderByDescending(keyVarUpdatedAt);
+    QueryBuilder<ParseObject> queryBuilder =
+        QueryBuilder(ParseObject(keyCategoryTable))
+          ..orderByDescending(keyVarUpdatedAt);
 
     if (limit != null) queryBuilder.setLimit(limit);
 
@@ -42,8 +47,7 @@ class CategoryApi {
           .map((e) => CategoryModel().mapParseToCategory(e))
           .toList();
     } else {
-      return SnackBarMessage()
-          .errorMsg(ParseErrors.getDescription(response.error.code));
+      DialogMessage.errorMsg(ParseErrors.getDescription(response.error.code));
     }
   }
 
@@ -59,8 +63,7 @@ class CategoryApi {
           .map((e) => CategoryModel().mapParseToCategory(e))
           .toList();
     } else {
-      return SnackBarMessage()
-          .errorMsg(ParseErrors.getDescription(response.error.code));
+      DialogMessage.errorMsg(ParseErrors.getDescription(response.error.code));
     }
   }
 
@@ -80,17 +83,16 @@ class CategoryApi {
       }
       final currentMonthIdx = category.first[keyMonthSpents]
           .indexWhere((c) => c['month'] == DateTime.now().month);
-      final currentMonthSpents =
-          category.first[keyMonthSpents][currentMonthIdx];
-      if (currentMonthSpents != null) {
+      if (currentMonthIdx != -1) {
+        final currentMonthSpents =
+            category.first[keyMonthSpents][currentMonthIdx];
         currentMonthSpents['totalValue'] =
             currentMonthSpents['totalValue'] != null
                 ? currentMonthSpents['totalValue'] + spent
                 : spent;
       } else {
         category.first['monthSpents'].add(CardMonthSpentsModel(
-                month: DateTime.now().month,
-                totalValue: (spent + currentMonthSpents['totalValue']))
+                month: DateTime.now().month, totalValue: (spent))
             .toJson());
       }
       categoryObject.set<String>(keyObjectId, categoryId);
@@ -103,8 +105,7 @@ class CategoryApi {
         return [];
       }
     } else {
-      return SnackBarMessage()
-          .errorMsg(ParseErrors.getDescription(response.error.code));
+      DialogMessage.errorMsg(ParseErrors.getDescription(response.error.code));
     }
   }
 }

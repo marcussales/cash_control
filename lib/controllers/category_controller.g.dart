@@ -30,18 +30,9 @@ mixin _$CategoryController on _CategoryController, Store {
       AsyncAction('_CategoryController.getCategories');
 
   @override
-  Future<dynamic> getCategories({int limit}) {
+  Future<void> getCategories({int limit}) {
     return _$getCategoriesAsyncAction
         .run(() => super.getCategories(limit: limit));
-  }
-
-  final _$getCategorySpentsAsyncAction =
-      AsyncAction('_CategoryController.getCategorySpents');
-
-  @override
-  Future<dynamic> getCategorySpents({int limit}) {
-    return _$getCategorySpentsAsyncAction
-        .run(() => super.getCategorySpents(limit: limit));
   }
 
   final _$getMoreEconomicCategoriesAsyncAction =
@@ -57,11 +48,11 @@ mixin _$CategoryController on _CategoryController, Store {
       ActionController(name: '_CategoryController');
 
   @override
-  CategoryModel selectCategorySpent(dynamic c) {
+  CategoryModel selectCategorySpent(CategoryModel category) {
     final _$actionInfo = _$_CategoryControllerActionController.startAction(
         name: '_CategoryController.selectCategorySpent');
     try {
-      return super.selectCategorySpent(c);
+      return super.selectCategorySpent(category);
     } finally {
       _$_CategoryControllerActionController.endAction(_$actionInfo);
     }

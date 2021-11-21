@@ -1,23 +1,26 @@
 import 'package:cash_control/controllers/card_controller.dart';
 import 'package:cash_control/controllers/page_controller.dart';
 import 'package:cash_control/controllers/spent_controller.dart';
+import 'package:cash_control/models/BankModel.dart';
 import 'package:cash_control/models/CardModel.dart';
 import 'package:cash_control/models/CategoryModel.dart';
 import 'package:cash_control/models/SpentModel.dart';
-import 'package:cash_control/screens/category/new_category_screen.dart';
-import 'package:cash_control/screens/my_cards/new_card_screen.dart';
+import 'package:cash_control/screens/category/category_screen.dart';
+import 'package:cash_control/screens/loading/loading_screen.dart';
+import 'package:cash_control/screens/my_cards/card_screen.dart';
 import 'package:cash_control/screens/spents/components/card_list_widget.dart';
 import 'package:cash_control/screens/spents/components/confirm_spent_widget.dart';
 import 'package:cash_control/screens/spents/components/delete_spent_dialog.dart';
 import 'package:cash_control/shared/global.dart';
-import 'package:cash_control/shared/snackbar_message.dart';
+import 'package:cash_control/shared/dialog_message.dart';
+import 'package:cash_control/shared/utils.dart';
 import 'package:cash_control/util/colors_util.dart';
-import 'package:cash_control/widget/button_widget.dart';
-import 'package:cash_control/widget/category_list_widget.dart';
-import 'package:cash_control/widget/custom_app_bar.dart';
-import 'package:cash_control/widget/form_field_widget.dart';
-import 'package:cash_control/widget/no_result_widget.dart';
-import 'package:cash_control/widget/save_button_widget.dart';
+import 'package:cash_control/widgets/button_widget.dart';
+import 'package:cash_control/widgets/category_list_widget.dart';
+import 'package:cash_control/widgets/custom_app_bar.dart';
+import 'package:cash_control/widgets/form_field_widget.dart';
+import 'package:cash_control/widgets/no_result_widget.dart';
+import 'package:cash_control/widgets/save_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_plus/flutter_plus.dart';
@@ -36,29 +39,35 @@ class _SpentScreenState extends State<SpentScreen> {
   final TextEditingController txtTitleController = TextEditingController();
   final TextEditingController txtDateController =
       TextEditingController(text: DateTime.now().formattedDate());
-  final TextEditingController txtValorController = TextEditingController();
+  final TextEditingController txtValueController =
+      TextEditingController(text: '0.00');
   CategoryModel categorySpent = CategoryModel();
   CardModel cardSpent = CardModel();
   bool confirmSpent = false;
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => setData());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => setData(),
+    );
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: _buildAppBar(),
-        body: SingleChildScrollView(
-          child: ContainerPlus(
-            padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
-            child: Observer(builder: (_) {
-              return _buildBody();
-            }),
-          ),
-        ));
+    return LoadingScreen(
+      key: Key('SpentScreen'),
+      body: Scaffold(
+          appBar: _buildAppBar(),
+          body: SingleChildScrollView(
+            child: ContainerPlus(
+              padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
+              child: Observer(builder: (_) {
+                return _buildBody();
+              }),
+            ),
+          )),
+    );
   }
 
   CustomAppBar _buildAppBar() {
@@ -66,7 +75,7 @@ class _SpentScreenState extends State<SpentScreen> {
       title: widget.spent != null ? 'Editar gasto' : 'Novo gasto',
       showBackButton: pagesStore.page != Pages.NEW_SPENT.index,
       showAction: widget.spent != null,
-      actionIcon: Icons.delete_forever,
+      actionIcon: Icons.delete,
       callback: () {
         dialogPlus.show(
           child: DeleteSpentDialog(
@@ -74,8 +83,8 @@ class _SpentScreenState extends State<SpentScreen> {
               spentController: spentController,
               callBack: () {
                 navigatorPlus.back(result: true);
-                SnackBarMessage()
-                    .showSucessMessage('Gasto removido com sucesso!');
+                cardController.updateCardData();
+                DialogMessage.showSucessMessage('Gasto removido com sucesso!');
               }),
           barrierColor: Colors.black.withOpacity(0.7),
           radius: RadiusPlus.all(20),
@@ -85,7 +94,8 @@ class _SpentScreenState extends State<SpentScreen> {
     );
   }
 
-  setData() {
+  setData() async {
+    await categoryController.getCategories();
     cardController.resetSelecteds();
     spentController.selectCardSpent(null);
     categoryController.resetSelectedCategory();
@@ -93,12 +103,14 @@ class _SpentScreenState extends State<SpentScreen> {
     if (widget.spent != null) {
       txtTitleController.text = widget.spent.spentTitle;
       txtDateController.text = widget.spent.spentDate.formattedDate();
-      txtValorController.text =
+      txtValueController.text =
           widget.spent.amount.numToFormattedMoney(withoutSymbol: true);
       categorySpent.objectId = widget.spent.categoryId;
       categoryController.selectCategorySpent(categorySpent);
       cardSpent = cardController.cards
-          .firstWhere((c) => c.cardId == widget.spent.paymentForm['cardId']);
+          // ignore: lines_longer_than_80_chars
+          .firstWhere(
+              (CardModel c) => c.cardId == widget.spent.paymentForm['cardId']);
       spentController.selectCardSpent(cardSpent);
     }
   }
@@ -112,11 +124,11 @@ class _SpentScreenState extends State<SpentScreen> {
 
   Widget _buildCantRegisterSpent() {
     return Container(
-        child: Column(children: [
+        child: Column(children: <Widget>[
       NoResultWidget(message: spentController.cantRegisterSpentMessage()),
       SizedBox(height: 50),
       Row(
-        children: [
+        children: <Widget>[
           _buildRegisterCardArea(),
           SizedBox(width: 10),
           _buildRegisterCategoryArea()
@@ -171,7 +183,7 @@ class _SpentScreenState extends State<SpentScreen> {
             title: 'Valor',
             isCurrency: true,
             onlyNumbers: true,
-            controller: txtValorController,
+            controller: txtValueController,
           ),
         ),
       ],
@@ -190,7 +202,6 @@ class _SpentScreenState extends State<SpentScreen> {
         SizedBox(height: 8),
         CategoryListWidget(
           isSelectable: true,
-          controller: categoryController,
           isSelectedItem: (item) {
             return categoryController.isSelectedCategory(item);
           },
@@ -211,7 +222,7 @@ class _SpentScreenState extends State<SpentScreen> {
               child: ButtonWidget(
                   text: 'Registrar categoria',
                   onPressed: () {
-                    navigatorPlus.show(NewCategoryScreen());
+                    navigatorPlus.show(CategoryScreen());
                   }),
             ),
           )
@@ -227,66 +238,80 @@ class _SpentScreenState extends State<SpentScreen> {
               child: ButtonWidget(
                   text: 'Registrar cartão',
                   onPressed: () {
-                    navigatorPlus.show(NewCardScreen(
-                      cardController: cardController,
-                    ));
+                    navigatorPlus.show(CardScreen());
                   }),
             ),
           )
         : SizedBox.shrink();
   }
 
+  _showConfirmRegister() {
+    dialogPlus.show(
+      child: ConfirmSpentWidget(callBack: () {
+        setState(() {
+          confirmSpent = true;
+        });
+        _registerSpent();
+      }),
+      barrierColor: Colors.black.withOpacity(0.7),
+      radius: RadiusPlus.all(20),
+      closeKeyboardWhenOpen: true,
+    );
+  }
+
   _registerSpent() async {
-    var formatedAmount =
-        double.parse(txtValorController.text.formatStringToReal());
+    if (txtDateController.text.isEmpty ||
+        txtTitleController.text.isEmpty ||
+        txtValueController.text.isEmpty ||
+        categoryController.selectedCategorySpent.objectId == null ||
+        spentController.cardSpent.cardId == null) {
+      DialogMessage.showMessageRequiredFields();
+      return;
+    }
+
+    if (Util.checkValueIsZero(value: txtValueController.text)) {
+      DialogMessage.errorMsg('O valor do gasto não pode ser zero');
+      return;
+    }
+
+    double formatedAmount =
+        double.parse(txtValueController.text.formatStringToReal());
 
     spentController.cardSpent.cardBank = cardController.banks
-        .firstWhere((b) =>
+        .firstWhere((BankModel b) =>
             b.bankName.toUpperCase() ==
             spentController.cardSpent.cardName.split('-')[1].trim())
         .bankId;
-
-    if (txtDateController.text.isEmpty ||
-        txtTitleController.text.isEmpty ||
-        txtValorController.text.isEmpty ||
-        categoryController.selectedCategorySpent.objectId == null ||
-        spentController.cardSpent.cardId == null) {
-      SnackBarMessage().errorMsg('Preencha os campos obrigatórios');
-      return;
-    }
 
     if (spentController.cardSpent.spentGoal <
             (spentController.cardSpent.monthSpents.totalValue +
                 formatedAmount) &&
         !confirmSpent) {
-      dialogPlus.show(
-        child: ConfirmSpentWidget(callBack: () {
-          setState(() {
-            confirmSpent = true;
-          });
-          _registerSpent();
-        }),
-        barrierColor: Colors.black.withOpacity(0.7),
-        radius: RadiusPlus.all(20),
-        closeKeyboardWhenOpen: true,
-      );
+      _showConfirmRegister();
       return;
     }
 
-    var newSpent = new SpentModel(
+    SpentModel newSpent = SpentModel(
         spentTitle: txtTitleController.text,
         spentDate: txtDateController.text.stringToDateTimeObject(),
         amount: formatedAmount.toString(),
         card: spentController.cardSpent,
         categoryId: categoryController.selectedCategorySpent.objectId);
-    if (widget.spent != null) newSpent.spentId = widget.spent.spentId;
+    if (widget.spent != null) {
+      newSpent.spentId = widget.spent.spentId;
+    }
     spentController
         .updateSelectedCategory(categoryController.selectedCategorySpent);
-    await spentController.registerSpent(newSpent, registerSucess);
+    await spentController.registerSpent(
+      spent: newSpent,
+      diffValue: _calculatedDiffAmount(formatedAmount),
+    );
   }
 
-  registerSucess() {
-    SnackBarMessage().showSucessMessage('Gasto registrado com sucesso!');
-    pagesStore.page != 2 ? navigatorPlus.back() : pagesStore.setPage(0);
+  String _calculatedDiffAmount(double formatedAmount) {
+    if (widget.spent != null) {
+      return (double.parse(widget.spent.amount) - formatedAmount).toString();
+    }
+    return null;
   }
 }

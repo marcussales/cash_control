@@ -18,7 +18,7 @@ class ColorsUtil {
   static final cinzaClaro = getColorByHex('#C1C1C1');
   static final cinzaClaroGradient = getColorByHex('#FAFAFA');
   static final saldoPositivoColor = getColorByHex('#5D5FEF');
-  static final verdeSplashScreen = getColorByHex('#9CB6BA');
+  static final verdeSplashScreen = getColorByHex('#5EAFBA');
   static final cinzaSplashScreen = getColorByHex('#E3E7E8');
   static final azulClaro = getColorByHex('#0EBBD3');
 

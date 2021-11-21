@@ -6,6 +6,8 @@ import 'package:cash_control/models/CategoryModel.dart';
 import 'package:cash_control/models/MonthModel.dart';
 import 'package:cash_control/models/SpentModel.dart';
 import 'package:cash_control/shared/global.dart';
+import 'package:cash_control/shared/dialog_message.dart';
+import 'package:flutter_plus/flutter_plus.dart';
 import 'package:mobx/mobx.dart';
 import 'package:cash_control/util/extensions.dart';
 part 'spent_controller.g.dart';
@@ -29,8 +31,18 @@ enum MonthsEnum {
 
 abstract class _SpentController with Store {
   _SpentController() {
-    reaction((_) => updateSpentsStatus,
-        (updateSpents) => {getSpents(), cardController.getCards()});
+    reaction(
+        (_) => updateSpentsStatus,
+        (updateSpents) => {
+              if (currentCard != null)
+                {
+                  getSpents(cardId: currentCard.cardId),
+                  updateCurrentCard(null),
+                }
+              else
+                {getSpents()},
+              cardController.getCards(),
+            });
   }
 
   SpentApi _api = SpentApi();
@@ -66,41 +78,53 @@ abstract class _SpentController with Store {
   bool updateSpentsStatus = false;
 
   @observable
+  CardModel currentCard;
+
+  @observable
   CategoryModel selectedCategory;
 
   @action
   bool changeUpdateSpentStatus() => updateSpentsStatus = !updateSpentsStatus;
 
   @action
+  updateCurrentCard(CardModel card) => currentCard = card;
+
+  @action
   CategoryModel updateSelectedCategory(value) => selectedCategory = value;
 
   @action
-  bool updateSearch(value) => emptySearch = value;
+  bool updateSearch(dynamic value) => emptySearch = value;
 
   @action
-  Future<void> registerSpent(SpentModel spent, Function callback) async {
-    await _api.saveSpent(spent);
+  Future<void> registerSpent(
+      {SpentModel spent, String diffValue, Function callback}) async {
+    loading.updateLoading(true);
+    await _api.saveSpent(spent: spent, diffValue: diffValue);
     categoryController.selectedCategorySpent = CategoryModel();
-    callback.call();
     changeUpdateSpentStatus();
+    cardController.isUpdatingCards(true);
+    categoryController.getCategories();
+    loading.updateLoading(false);
+    DialogMessage.showSucessMessage('Gasto registrado com sucesso!');
+    pagesStore.page != 2 ? navigatorPlus.back() : pagesStore.setPage(0);
   }
 
   @action
   Future<void> getSpents({String cardId}) async {
-    mySpents = ObservableList();
+    mySpents.clear();
     loading.updateLoading(true);
     updateSearch(false);
-    var montSpents = await _api.getMonthSpents(
+    List<SpentModel> monthSpents = await _api.getMonthSpents(
         currentMonth: DateTime.now().month, cardId: cardId);
-    if (montSpents.length == 0) updateSearch(true);
-    mySpents.addAll(montSpents);
+    if (monthSpents.length == 0) updateSearch(true);
+    mySpents.addAll(monthSpents);
     loading.updateLoading(false);
   }
 
   @action
   Future<void> getCategorySpents(CategoryModel category) async {
     loading.updateLoading(true);
-    var spents = await _api.getCategorySpents(category: category);
+    List<SpentModel> spents = await _api.getCategorySpents(category: category);
     categorySpents.addAll(spents);
     sumCategorySpentsValue();
     loading.updateLoading(false);
@@ -114,20 +138,22 @@ abstract class _SpentController with Store {
   }
 
   @action
-  diffCategorySpents(value1, value2) {
-    if (value1 == 0.0)
-      return '${double.parse((value2).toString()).formattedMoneyBr()}';
-    return '${double.parse((value2 - value1).toString()).formattedMoneyBr()}';
+  diffCategorySpents(value) {
+    if (categorySpentsValue == 0.0) {
+      return '${double.parse((value).toString()).formattedMoneyBr()}';
+    }
+    return '${double.parse((value - categorySpentsValue).toString()).formattedMoneyBr()}';
   }
 
   @action
-  bool isPositiveBalance({value1, value2}) => positiveBalance = value1 < value2;
+  bool isPositiveBalance({double value}) =>
+      positiveBalance = categorySpentsValue < value;
 
   @action
   Future<void> searchSpent({String search}) async {
     loading.updateLoading(true);
     mySpents.clear();
-    var result = await _api.searchSpent(search: search);
+    List<SpentModel> result = await _api.searchSpent(search: search);
     if (result == null) {
       updateSearch(true);
     } else {
@@ -141,7 +167,7 @@ abstract class _SpentController with Store {
   CardModel cardSpent = CardModel();
 
   @action
-  CardModel selectCardSpent(c) {
+  CardModel selectCardSpent(CardModel c) {
     cardSpent = null;
     cardSpent = c;
     return c;
@@ -151,6 +177,8 @@ abstract class _SpentController with Store {
   Future<void> deleteSpent(SpentModel spent) async {
     await _api.delete(spent: spent);
     await _cardApi.removeSpentFromCard(spent: spent);
+    await cardController.getCards();
+    await cardController.getSavingsData();
     loading.updateLoading(false);
     changeUpdateSpentStatus();
   }
@@ -182,10 +210,13 @@ abstract class _SpentController with Store {
 
   String cantRegisterSpentMessage() {
     if (!hasCards()) {
+      // ignore: lines_longer_than_80_chars
       return 'Para registrar seus gastos precisamos ao menos uma categoria registrada';
     } else if (!hasCategories()) {
+      // ignore: lines_longer_than_80_chars
       return 'Para registrar seus gastos precisamos ao menos um cartão registrado';
     }
+    // ignore: lines_longer_than_80_chars
     return 'Para registrar seus gastos precisamos ao menos uma categoria e um cartão registrados';
   }
 }

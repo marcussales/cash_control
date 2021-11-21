@@ -1,18 +1,15 @@
 import 'package:cash_control/controllers/category_controller.dart';
 import 'package:cash_control/screens/category/categories_screen.dart';
+import 'package:cash_control/shared/global.dart';
 import 'package:cash_control/util/colors_util.dart';
-import 'package:cash_control/widget/category_list_widget.dart';
+import 'package:cash_control/widgets/category_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_plus/flutter_plus.dart';
 
 class CategoryAreaWidget extends StatelessWidget {
-  final CategoryController controller;
-
-  const CategoryAreaWidget({Key key, this.controller}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return controller.categoriesList.length > 0
+    return categoryController.categoriesList.length > 0
         ? Column(
             children: [
               Row(
@@ -28,7 +25,6 @@ class CategoryAreaWidget extends StatelessWidget {
               ),
               SizedBox(height: 15),
               CategoryListWidget(
-                controller: controller,
                 isSelectable: false,
                 callbackSelectItem: (item) => null,
                 isSelectedItem: (item) => false,

@@ -23,7 +23,7 @@ abstract class _IconsController with Store {
 
   @action
   Future<void> getIconsList() async {
-    var listFromApi = await _api.getList();
+    List<IconModel> listFromApi = await _api.getList();
     iconsList.addAll(listFromApi);
     currentList.addAll(listFromApi);
   }
@@ -35,4 +35,11 @@ abstract class _IconsController with Store {
   }
 
   String getSelectedItem() => iconsList[selectedItem].icon;
+
+  @action
+  setCategoryIcon(String iconUrl) {
+    int categoryIconIdx =
+        iconsList.indexWhere((IconModel icon) => icon.icon == iconUrl);
+    setSelectedItem(categoryIconIdx);
+  }
 }

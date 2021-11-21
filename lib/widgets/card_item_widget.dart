@@ -1,4 +1,5 @@
 import 'package:cash_control/models/CardModel.dart';
+import 'package:cash_control/screens/my_cards/card_spents_screen.dart';
 import 'package:cash_control/shared/global.dart';
 import 'package:cash_control/util/colors_util.dart';
 import 'package:flutter/material.dart';
@@ -11,11 +12,16 @@ class CardItemWidget extends StatelessWidget {
   final Function(dynamic) callbackSelectItem;
   final Function(dynamic) isSelectedItem;
   final CardModel card;
+  final double width;
+  final double heigth;
+
   const CardItemWidget(
       {this.isSelectable,
       this.callbackSelectItem,
       this.isSelectedItem,
-      this.card});
+      this.card,
+      this.width,
+      this.heigth});
 
   @override
   Widget build(BuildContext context) {
@@ -30,13 +36,15 @@ class CardItemWidget extends StatelessWidget {
           if (isSelectable) {
             this.isSelectedItem(card);
             this.callbackSelectItem.call(card);
+            return;
           }
+          navigatorPlus.show(CardSpentsScreen(card: card));
         },
         margin: EdgeInsets.fromLTRB(0, 10, 10, 10),
-        padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        padding: EdgeInsets.fromLTRB(18, 15, 18, 15),
         radius: RadiusPlus.all(12),
-        width: !isSelectable ? 160 : 150,
-        height: 90,
+        width: width ?? 165,
+        height: heigth ?? 110,
         gradient: GradientPlus.linear(
           colors: gradientColor(card),
           begin: Alignment.topLeft,
@@ -50,7 +58,7 @@ class CardItemWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextPlus(card.cardName.split('-')[1].trim(),
-                    fontSize: isSelectable ? 18 : 16,
+                    fontSize: isSelectable ? 17 : 14.5,
                     fontWeight: isSelectedItem(card)
                         ? FontWeight.w700
                         : FontWeight.normal,

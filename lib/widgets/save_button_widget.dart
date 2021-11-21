@@ -1,4 +1,4 @@
-import 'package:cash_control/widget/button_widget.dart';
+import 'package:cash_control/widgets/button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_plus/flutter_plus.dart';
 

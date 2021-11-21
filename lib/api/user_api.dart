@@ -33,8 +33,9 @@ class UserApi {
     parseUser.set<String>(keyUserName, auth.user.displayName);
     parseUser.set<num>(keyUserSpentGoal, auth.user.spentGoal);
     parseUser.set<num>(keyMonthIncome, auth.user.monthIncome);
+    // ignore: always_specify_types
     parseUser.set<List>(keySavings, auth.user.savings);
-    final response = await parseUser.save();
+    final ParseResponse response = await parseUser.save();
 
     if (response.success) {
       return mapParseToUser(response.result);

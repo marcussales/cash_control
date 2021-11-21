@@ -1,6 +1,7 @@
 import 'package:cash_control/controllers/category_controller.dart';
 import 'package:cash_control/models/CategoryModel.dart';
-import 'package:cash_control/widget/category_tile.dart';
+import 'package:cash_control/shared/global.dart';
+import 'package:cash_control/widgets/category_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_plus/flutter_plus.dart';
@@ -10,32 +11,31 @@ class CategoryListWidget extends StatelessWidget {
   final Function(dynamic) callbackSelectItem;
   final Function(dynamic) isSelectedItem;
   final CategoryModel category;
-  final CategoryController controller;
 
   const CategoryListWidget(
       {Key key,
       this.isSelectable = false,
       this.callbackSelectItem,
       this.isSelectedItem,
-      this.category,
-      this.controller})
+      this.category})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
+      List<CategoryModel> categories = categoryController.categoriesList;
       return ContainerPlus(
         height: 115,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: controller.categoriesList.length ?? 10,
-          itemBuilder: (_, index) {
+          itemCount: isSelectable ? categories.length : 10,
+          itemBuilder: (_, int index) {
             return CategoryTile(
                 isSelectable: isSelectable,
                 callbackSelectItem: callbackSelectItem,
                 isSelectedItem: isSelectedItem,
-                category: controller.categoriesList[index],
-                hasItens: controller.categoriesList.length == 0);
+                category: categories[index],
+                hasItens: categories.length == 0);
           },
         ),
       );

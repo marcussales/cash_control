@@ -19,11 +19,12 @@ enum BanksEnum {
   ITAU,
   CAIXA
 }
+
 class CardController = _CardController with _$CardController;
 
 abstract class _CardController with Store {
   _CardController() {
-    reaction((_) => updateCards, (updateCards) => getCards());
+    reaction((_) => updateCards, (bool updateCards) => {updateCardData()});
   }
   CardApi _cardApi = CardApi();
   UserController _userController = UserController();
@@ -50,7 +51,7 @@ abstract class _CardController with Store {
   @observable
   bool updateCards = false;
 
-  ObservableList<CardModel> cards = ObservableList();
+  ObservableList<CardModel> cards = ObservableList<CardModel>();
 
   @observable
   double totalCardSpents = 0.0;
@@ -59,7 +60,7 @@ abstract class _CardController with Store {
   CardModel selectCard(value) => selectedCard = value;
 
   @action
-  bool isUpdatingCards(value) => updateCards = value;
+  bool isUpdatingCards(bool value) => updateCards = !updateCards;
 
   @action
   bool isSelectedCard(card) => selectedCard.cardTypeId != null
@@ -76,7 +77,7 @@ abstract class _CardController with Store {
   double averageValue = 0.0;
 
   @action
-  double updateAverageValue(value) => averageValue = value;
+  double updateAverageValue(double value) => averageValue = value;
 
   @action
   resetSelecteds() {
@@ -96,16 +97,24 @@ abstract class _CardController with Store {
     return BankModel(bankName: item.title, bankId: int.parse(item.objectId));
   }
 
-  Future saveCard(String name, int typeId, int bankId, String spentGoal,
-      Function callback) async {
-    var cardName = '${typeCards[typeId].cardType} - ${banks[bankId].bankName}';
+  Future<void> saveCard(
+      {String id,
+      String name,
+      int typeId,
+      int bankId,
+      String spentGoal,
+      Function callback}) async {
+    loading.updateLoading(true);
+    String cardName =
+        '${typeCards[typeId].cardType} - ${banks[bankId].bankName}';
     await _cardApi.saveCard(
-        name, typeId, bankId, cardName.toUpperCase(), spentGoal);
+        id, name, typeId, bankId, cardName.toUpperCase(), spentGoal);
     callback.call();
     isUpdatingCards(true);
+    loading.updateLoading(false);
   }
 
-  Future updateCardSpents(
+  Future<void> updateCardSpents(
       {String cardId,
       double spentValue,
       int spentMonth,
@@ -118,15 +127,17 @@ abstract class _CardController with Store {
   }
 
   @action
-  Future getCards() async {
+  Future<void> getCards() async {
     loading.updateLoading(true);
-    var myCards = await _cardApi.getUserCards();
+    List<CardModel> myCards = await _cardApi.getUserCards();
     cards.clear();
+    myCards.sort((CardModel a, CardModel b) =>
+        b.monthSpents.totalValue.compareTo(a.monthSpents.totalValue));
     cards.addAll(myCards);
     loading.updateLoading(false);
   }
 
-  Future getSavingsData() async {
+  Future<void> getSavingsData() async {
     await sumCardsSpents(cards: cards);
     await updateSavingsValue();
   }
@@ -143,6 +154,7 @@ abstract class _CardController with Store {
       auth.user.savings[currentMonthSavingsIdx] =
           UserSavingsModel(month: DateTime.now().month, savings: savingsValue);
       _userController.saveUser();
+      return;
     }
     auth.user.savings
         .add(UserSavingsModel(month: DateTime.now().month, savings: 0.0));
@@ -152,15 +164,21 @@ abstract class _CardController with Store {
   sumCardsSpents({List<CardModel> cards}) {
     totalCardSpents = 0.0;
     savingsValue = 0.0;
-    cards.forEach((c) {
+    cards.forEach((CardModel c) {
       totalCardSpents += c.monthSpents.totalValue;
     });
   }
 
+  @action
+  Future<void> updateCardData() async {
+    await getCards();
+    await getSavingsData();
+  }
+
   CardModel moreEconomicCard() {
     List<num> spentsByCards = [];
-    cards.forEach((c) => spentsByCards.add(c.monthSpents.totalValue));
-    var moreEconomic = cards.firstWhere((CardModel card) =>
+    cards.forEach((CardModel c) => spentsByCards.add(c.monthSpents.totalValue));
+    CardModel moreEconomic = cards.firstWhere((CardModel card) =>
         card.monthSpents.totalValue == spentsByCards.reduce(min));
     return moreEconomic;
   }

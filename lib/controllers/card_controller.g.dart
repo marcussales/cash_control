@@ -102,8 +102,16 @@ mixin _$CardController on _CardController, Store {
   final _$getCardsAsyncAction = AsyncAction('_CardController.getCards');
 
   @override
-  Future<dynamic> getCards() {
+  Future<void> getCards() {
     return _$getCardsAsyncAction.run(() => super.getCards());
+  }
+
+  final _$updateCardDataAsyncAction =
+      AsyncAction('_CardController.updateCardData');
+
+  @override
+  Future<void> updateCardData() {
+    return _$updateCardDataAsyncAction.run(() => super.updateCardData());
   }
 
   final _$_CardControllerActionController =
@@ -121,7 +129,7 @@ mixin _$CardController on _CardController, Store {
   }
 
   @override
-  bool isUpdatingCards(dynamic value) {
+  bool isUpdatingCards(bool value) {
     final _$actionInfo = _$_CardControllerActionController.startAction(
         name: '_CardController.isUpdatingCards');
     try {
@@ -154,7 +162,7 @@ mixin _$CardController on _CardController, Store {
   }
 
   @override
-  double updateAverageValue(dynamic value) {
+  double updateAverageValue(double value) {
     final _$actionInfo = _$_CardControllerActionController.startAction(
         name: '_CardController.updateAverageValue');
     try {

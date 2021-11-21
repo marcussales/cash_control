@@ -55,6 +55,17 @@ mixin _$IconsController on _IconsController, Store {
   }
 
   @override
+  dynamic setCategoryIcon(String iconUrl) {
+    final _$actionInfo = _$_IconsControllerActionController.startAction(
+        name: '_IconsController.setCategoryIcon');
+    try {
+      return super.setCategoryIcon(iconUrl);
+    } finally {
+      _$_IconsControllerActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 selectedItem: ${selectedItem}

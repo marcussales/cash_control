@@ -38,13 +38,13 @@ class CategoryTile extends StatelessWidget {
           },
           radius: RadiusPlus.all(15),
           color: isSelectedItem(this.category) && this.isSelectable
-              ? ColorsUtil.verdeEscuro
+              ? ColorsUtil.verdeSecundarioGradient
               : Colors.white,
           alignment: Alignment.center,
           border: BorderPlus(
               color: ColorsUtil.verdeEscuro, width: isSelectable ? 1.5 : 0.7),
           padding: EdgeInsets.all(10),
-          width: 90,
+          width: 95,
           margin: EdgeInsets.all(4),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -61,7 +61,7 @@ class CategoryTile extends StatelessWidget {
                   category.title,
                   textOverflow: TextOverflow.ellipsis,
                   color: isSelectedItem(this.category) && this.isSelectable
-                      ? Colors.white
+                      ? ColorsUtil.verdeSecundario
                       : ColorsUtil.verdeEscuro,
                   fontSize: 15,
                   fontWeight: this.isSelectedItem(this.category)

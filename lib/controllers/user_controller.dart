@@ -2,7 +2,7 @@ import 'package:cash_control/api/user_api.dart';
 import 'package:cash_control/models/UserModel.dart';
 import 'package:cash_control/models/UserSavingsModel.dart';
 import 'package:cash_control/shared/global.dart';
-import 'package:cash_control/shared/snackbar_message.dart';
+import 'package:cash_control/shared/dialog_message.dart';
 import 'package:cash_control/util/colors_util.dart';
 import 'package:flutter_plus/flutter_plus.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -43,9 +43,12 @@ abstract class _UserController with Store {
 
   @action
   Future loginOrSignUp(GoogleSignInAccount googleSignInAccount) async {
+    if (googleSignInAccount == null) {
+      return;
+    }
     auth.user = UserModel();
     updateLoginStatus(true);
-    final currentUserData =
+    final UserModel currentUserData =
         await _api.login(googleSignInAccount.email, googleSignInAccount.id);
     if (currentUserData != null) {
       isNewUser = false;
@@ -56,26 +59,25 @@ abstract class _UserController with Store {
   }
 
   Future<UserModel> signUpUser(GoogleSignInAccount googleSignInAccount) async {
-    final formattedUser = _api.mapGoogleUserToUser(googleSignInAccount);
-    final newUserData = await _api.signUp(formattedUser);
+    // ignore: lines_longer_than_80_chars
+    final UserModel formattedUser =
+        _api.mapGoogleUserToUser(googleSignInAccount);
+    final UserModel newUserData = await _api.signUp(formattedUser);
     return _setDataToUser(googleSignInAccount, newUserData, true);
   }
 
+  @action
   Future<UserModel> _setDataToUser(GoogleSignInAccount googleSignInAccount,
       UserModel data, bool newUser) async {
     if (googleSignInAccount == null) {
-      SnackBarMessage().showMessage(
-          title: 'Espero te ver em breve, até mais',
-          bgColor: ColorsUtil.verdeSecundario,
-          txtColor: ColorsUtil.verdeEscuro);
       navigatorPlus.backAll();
       return data;
     }
     if (data == null) {
-      SnackBarMessage().showMessage(
-          title: 'Ops... você já tem cadastro, tente fazer login',
-          bgColor: ColorsUtil.verdeSecundario,
-          txtColor: ColorsUtil.verdeEscuro);
+      DialogMessage.showMessage(
+        title: 'Ops... você já tem cadastro, tente fazer login',
+        bgColor: ColorsUtil.verdeSecundario,
+      );
       return data;
     }
     auth.user.newUser = newUser;
@@ -90,8 +92,9 @@ abstract class _UserController with Store {
     return auth.user;
   }
 
-  Future<void> saveUser({Function callback}) async {
+  Future<void> saveUser({Function callback, double incomeValue}) async {
     loading.updateLoading(true);
+    auth.user.monthIncome = incomeValue ?? auth.user.monthIncome;
     await _api.saveUserData();
     loading.updateLoading(false);
     if (callback != null) callback.call();

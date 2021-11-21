@@ -16,19 +16,21 @@ class LoadingScreen extends StatefulWidget {
 class _LoadingScreenState extends State<LoadingScreen> {
   @override
   void initState() {
-    // _changeOpacity();
+    _changeOpacity();
     super.initState();
   }
 
-  var showOpacity = false;
+  bool showOpacity = true;
+  Duration duration = Duration(milliseconds: 400);
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
-      // if (!loading.isLoading) {
-      return widget.body;
-      // } else {
-      // return _buildLoading();
-      // }
+      if (!loading.isLoading) {
+        return widget.body;
+      } else {
+        return _buildLoading();
+      }
     });
   }
 
@@ -36,32 +38,32 @@ class _LoadingScreenState extends State<LoadingScreen> {
     return ContainerPlus(
         height: 900,
         gradient: GradientPlus.linear(
-          colors: [
+          colors: <Color>[
             ColorsUtil.verdeSplashScreen,
             ColorsUtil.cinzaSplashScreen,
           ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+          begin: Alignment.centerLeft,
+          end: Alignment.bottomRight,
         ),
         child: AnimatedOpacity(
           opacity: showOpacity ? 1.0 : 0.0,
-          duration: const Duration(milliseconds: 500),
+          duration: duration,
           child: SizedBox(
             height: 50,
             child: Image.asset(
               'assets/images/splash.png',
-              height: 200,
+              height: 100,
             ),
           ),
         ));
   }
 
-  Future<void> _changeOpacity() {
-    Future.delayed(Duration(milliseconds: 500)).then((value) => {
-          setState(() {
-            showOpacity = !showOpacity;
-            _changeOpacity();
-          })
-        });
+  void _changeOpacity() {
+    Future<void>.delayed(duration)
+        // ignore: always_specify_types
+        .then((_) => {
+              showOpacity = !showOpacity,
+              _changeOpacity(),
+            });
   }
 }

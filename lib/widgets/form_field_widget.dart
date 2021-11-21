@@ -46,7 +46,7 @@ class FormFieldWidget extends StatelessWidget {
       textInputFormatters.add(maskFormatter);
     }
 
-    if (onlyNumbers) {
+    if (onlyNumbers || isCurrency) {
       FilteringTextInputFormatter.allow(RegExp(r'[0-9]'));
     }
 
@@ -73,7 +73,7 @@ class FormFieldWidget extends StatelessWidget {
           height: 50,
           child: RawKeyboardListener(
             focusNode: FocusNode(),
-            onKey: (event) {
+            onKey: (RawKeyEvent event) {
               if (event.logicalKey == LogicalKeyboardKey.backspace && isDate) {
                 controller.text = '';
               }
@@ -91,8 +91,9 @@ class FormFieldWidget extends StatelessWidget {
                         )
                       : null),
               inputFormatters: _getFormatters(),
-              keyboardType:
-                  onlyNumbers ? TextInputType.number : TextInputType.name,
+              keyboardType: onlyNumbers || isCurrency
+                  ? TextInputType.number
+                  : TextInputType.name,
               style: TextStyle(
                 color: ColorsUtil.verdeEscuro,
               ),

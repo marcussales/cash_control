@@ -1,13 +1,30 @@
 import 'package:cash_control/screens/perfil/my_data_screen.dart';
 import 'package:cash_control/screens/spents_report/spents_report_screen.dart';
 import 'package:cash_control/shared/global.dart';
+import 'package:cash_control/shared/dialog_message.dart';
 import 'package:cash_control/util/colors_util.dart';
-import 'package:cash_control/widget/custom_app_bar.dart';
-import 'package:cash_control/widget/profile_image_widget.dart';
+import 'package:cash_control/widgets/custom_app_bar.dart';
+import 'package:cash_control/widgets/profile_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_plus/flutter_plus.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  String currentVersion = '';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _apkCurrentVersion();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,9 +90,9 @@ class ProfileScreen extends StatelessWidget {
           color: ColorsUtil.verdeEscuro,
         ),
         _buildOption(
-            title: 'Relatório financeiro',
-            icon: Icons.insert_chart_outlined,
-            screen: SpentsReportScreen()),
+          title: 'Relatório financeiro',
+          icon: Icons.insert_chart_outlined,
+        ),
         Divider(
           height: 0.1,
           color: ColorsUtil.verdeEscuro,
@@ -87,7 +104,11 @@ class ProfileScreen extends StatelessWidget {
   Widget _buildOption({String title, IconData icon, Widget screen}) {
     return ContainerPlus(
         padding: EdgeInsets.fromLTRB(0, 15, 5, 15),
-        onTap: () => navigatorPlus.show(screen),
+        onTap: () => screen != null
+            ? navigatorPlus.show(screen)
+            : DialogMessage.showMessage(
+                title: 'Funcionalidade indisponivel',
+                bgColor: ColorsUtil.verdeSecundario),
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Row(
@@ -134,14 +155,22 @@ class ProfileScreen extends StatelessWidget {
     ).createShader(Rect.fromLTWH(0.0, 0.0, 180.0, 70.0));
 
     return ContainerPlus(
-      margin: EdgeInsets.only(top: 250),
+      margin: EdgeInsets.only(top: 300),
       child: Text(
-        apkVersion,
+        // apkCurrentVersion(),
+        currentVersion,
         style: new TextStyle(
             fontSize: 16.0,
             fontWeight: FontWeight.bold,
             foreground: Paint()..shader = linearGradient),
       ),
     );
+  }
+
+  Future<String> _apkCurrentVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      currentVersion = 'Versão ${packageInfo.version}';
+    });
   }
 }

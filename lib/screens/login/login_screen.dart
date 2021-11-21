@@ -1,7 +1,7 @@
 import 'package:cash_control/base/base_screen.dart';
 import 'package:cash_control/controllers/user_controller.dart';
 import 'package:cash_control/shared/global.dart';
-import 'package:cash_control/shared/snackbar_message.dart';
+import 'package:cash_control/shared/dialog_message.dart';
 import 'package:cash_control/util/colors_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -114,7 +114,8 @@ class _LoginScreenState extends State<LoginScreen> {
           Observer(builder: (_) {
             if (_controller.doLogin) {
               return CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(ColorsUtil.verdeEscuro));
+                  valueColor:
+                      AlwaysStoppedAnimation(ColorsUtil.verdeSecundario));
             }
             return ContainerPlus(
                 child: Image.asset(
@@ -143,16 +144,17 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         SizedBox(height: 20),
         ContainerPlus(
-            onTap: _signUp,
-            child: (TextPlus(
-              'Cadastre-se',
-              fontSize: 22,
-              textAlign: TextAlign.start,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 3,
-              wordSpacing: 4,
-              color: ColorsUtil.verdeSecundario,
-            ))),
+          onTap: _signUp,
+          child: (TextPlus(
+            'Cadastre-se',
+            fontSize: 22,
+            textAlign: TextAlign.start,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 3,
+            wordSpacing: 4,
+            color: ColorsUtil.verdeSecundario,
+          )),
+        ),
       ],
     );
   }
@@ -160,15 +162,17 @@ class _LoginScreenState extends State<LoginScreen> {
   Future _login() async {
     try {
       GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
-      var user = await _controller.loginOrSignUp(googleSignInAccount);
+      // ignore: always_specify_types
+      final user = await _controller.loginOrSignUp(googleSignInAccount);
       if (user != null) {
         navigatorPlus.show(BaseScreen());
         pagesStore.setPage(0);
       }
       return;
     } catch (error) {
-      SnackBarMessage()
-          .errorMsg('Não foi possivel realizar o login, tente novamente');
+      error._controller.updateLoginStatus(false);
+      DialogMessage.errorMsg(
+          'Não foi possivel realizar o login, tente novamente');
     }
   }
 
@@ -181,8 +185,8 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
     } catch (error) {
-      SnackBarMessage()
-          .errorMsg('Não foi possivel realizar o login, tente novamente');
+      DialogMessage.errorMsg(
+          'Não foi possivel realizar o login, tente novamente');
     }
   }
 }

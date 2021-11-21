@@ -1,7 +1,7 @@
 import 'package:cash_control/controllers/card_controller.dart';
 import 'package:cash_control/shared/global.dart';
 import 'package:cash_control/util/colors_util.dart';
-import 'package:cash_control/widget/card_item_widget.dart';
+import 'package:cash_control/widgets/card_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_plus/flutter_plus.dart';

@@ -3,15 +3,18 @@ import 'package:cash_control/models/CardSpentModel.dart';
 import 'package:cash_control/models/SpentModel.dart';
 import 'package:cash_control/shared/global.dart';
 import 'package:cash_control/shared/parse_errors.dart';
-import 'package:cash_control/shared/snackbar_message.dart';
+import 'package:cash_control/shared/dialog_message.dart';
 import 'package:cash_control/shared/table_keys.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 class CardApi {
-  Future<void> saveCard(String name, int typeId, int bankId, String cardName,
-      String spentGoal) async {
+  Future<void> saveCard(String id, String name, int typeId, int bankId,
+      String cardName, String spentGoal) async {
     try {
-      final cardObject = ParseObject(keyCardTable);
+      ParseObject cardObject = ParseObject(keyCardTable);
+      if (id != null) {
+        cardObject.set<String>(keyObjectId, id);
+      }
       cardObject.set<String>(keyCardOwnerName, name);
       cardObject.set<String>(keyCardName, cardName);
       cardObject.set<int>(keyCardType, typeId);
@@ -33,6 +36,7 @@ class CardApi {
   }
 
   Future<List<CardModel>> getUserCards() async {
+    // ignore: always_specify_types
     final queryBuilder = QueryBuilder(ParseObject(keyCardTable))
       ..orderByDescending(keyVarUpdatedAt);
     queryBuilder.whereEqualTo(keyCardOwner, auth.user.id);
@@ -44,7 +48,7 @@ class CardApi {
       }
       return response.results.map((e) => mapParseToMonthSpent(e)).toList();
     } else {
-      return SnackBarMessage().errorMsg(ParseErrors.getDefaultDescription());
+      DialogMessage.errorMsg(ParseErrors.getDefaultDescription());
     }
   }
 
@@ -57,8 +61,7 @@ class CardApi {
     if (response.success) {
       return response.results.map((e) => mapParseToMonthSpent(e)).toList();
     } else {
-      return SnackBarMessage()
-          .errorMsg(ParseErrors.getDescription(response.error.code));
+      DialogMessage.errorMsg(ParseErrors.getDescription(response.error.code));
     }
   }
 
@@ -67,15 +70,17 @@ class CardApi {
       double spentValue,
       int spentMonth,
       bool resetSpentsValue}) async {
-    final queryBuilder = QueryBuilder(ParseObject(keyCardTable))
-      ..orderByAscending(keyCardBank);
+    // ignore: lines_longer_than_80_chars
+    QueryBuilder<ParseObject> queryBuilder =
+        QueryBuilder(ParseObject(keyCardTable))..orderByAscending(keyCardBank);
     queryBuilder.whereEqualTo(keyCardOwner, auth.user.id);
     queryBuilder.whereEqualTo(keyObjectId, cardObjectId);
     final response = await queryBuilder.query();
     if (response.success) {
-      final results = response.results;
-      final currentMonthIdx = results.first[keyMonthSpents]
+      List results = response.results;
+      int currentMonthIdx = results.first[keyMonthSpents]
           .indexWhere((c) => c['month'] == DateTime.now().month);
+      // ignore: always_specify_types
       final currentMonthSpents = currentMonthIdx != -1
           ? response.results.first[keyMonthSpents][currentMonthIdx]
           : null;
@@ -91,22 +96,24 @@ class CardApi {
             .toJson());
       }
       try {
-        final cardObject = ParseObject(keyCardTable);
+        ParseObject cardObject = ParseObject(keyCardTable);
         cardObject.objectId = cardObjectId;
         cardObject.set<bool>(keyInvoicePaid, resetSpentsValue);
         cardObject.set<List>(keyMonthSpents, results.first['monthSpents']);
+        // ignore: always_specify_types
         final response = await cardObject.save();
         if (!response.success) {
+          // ignore: always_specify_types
           return Future.error(ParseErrors.getDescription(response.error.code));
         } else {
           return;
         }
       } catch (e) {
-        return SnackBarMessage().errorMsg(ParseErrors.getDefaultDescription());
+        return DialogMessage.errorMsg(ParseErrors.getDefaultDescription());
       }
     } else {
-      return SnackBarMessage()
-          .errorMsg(ParseErrors.getDescription(response.error.code));
+      return DialogMessage.errorMsg(
+          ParseErrors.getDescription(response.error.code));
     }
   }
 
@@ -137,12 +144,12 @@ class CardApi {
           return;
         }
       } catch (e) {
-        return SnackBarMessage()
-            .errorMsg(ParseErrors.getDescription(response.error.code));
+        return DialogMessage.errorMsg(
+            ParseErrors.getDescription(response.error.code));
       }
     } else {
-      return SnackBarMessage()
-          .errorMsg(ParseErrors.getDescription(response.error.code));
+      return DialogMessage.errorMsg(
+          ParseErrors.getDescription(response.error.code));
     }
   }
 

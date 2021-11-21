@@ -2,6 +2,7 @@ import 'package:cash_control/controllers/card_controller.dart';
 import 'package:cash_control/screens/spents/spent_screen.dart';
 import 'package:cash_control/screens/spents_report/spents_report_screen.dart';
 import 'package:cash_control/shared/global.dart';
+import 'package:cash_control/shared/dialog_message.dart';
 import 'package:cash_control/util/colors_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -70,7 +71,7 @@ class FinancesAreaWidget extends StatelessWidget {
     return Observer(builder: (_) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           TextPlus(
             cardController.savingsValue.formattedMoneyBr(),
             fontSize: 30,
@@ -93,7 +94,7 @@ class FinancesAreaWidget extends StatelessWidget {
             ),
             color: Colors.white,
             splashColor: ColorsUtil.verdeClaro,
-            onPressed: () => navigatorPlus.show(SpentsReportScreen()),
+            onPressed: () => DialogMessage.showMessage(),
           )
         ],
       );
