@@ -50,7 +50,7 @@ abstract class _SpentController with Store {
   ObservableList<SpentModel> mySpents = ObservableList();
   ObservableList<SpentModel> categorySpents = ObservableList();
 
-  List<MonthModel> months = [
+  List<MonthModel> months = <MonthModel>[
     MonthModel(month: 'JANEIRO', id: MonthsEnum.JANEIRO.index + 1),
     MonthModel(month: 'FEVEREIRO', id: MonthsEnum.FEVEREIRO.index + 1),
     MonthModel(month: 'MARÇO', id: MonthsEnum.MARCO.index + 1),
@@ -83,6 +83,15 @@ abstract class _SpentController with Store {
   @observable
   CategoryModel selectedCategory;
 
+  @observable
+  CardModel cardSpent = CardModel();
+
+  @observable
+  String searchText = '';
+
+  @observable
+  int page = 0;
+
   @action
   bool changeUpdateSpentStatus() => updateSpentsStatus = !updateSpentsStatus;
 
@@ -93,7 +102,7 @@ abstract class _SpentController with Store {
   CategoryModel updateSelectedCategory(value) => selectedCategory = value;
 
   @action
-  bool updateSearch(dynamic value) => emptySearch = value;
+  bool isEmptySearch(dynamic value) => emptySearch = value;
 
   @action
   Future<void> registerSpent(
@@ -111,18 +120,22 @@ abstract class _SpentController with Store {
 
   @action
   Future<void> getSpents({String cardId}) async {
-    mySpents.clear();
+    if (page == 0) {
+      mySpents.clear();
+    }
     loading.updateLoading(true);
-    updateSearch(false);
+    isEmptySearch(false);
     List<SpentModel> monthSpents = await _api.getMonthSpents(
-        currentMonth: DateTime.now().month, cardId: cardId);
-    if (monthSpents.length == 0) updateSearch(true);
+        currentMonth: DateTime.now().month, cardId: cardId, page: page);
+    if (monthSpents.length == 0) isEmptySearch(true);
     mySpents.addAll(monthSpents);
     loading.updateLoading(false);
+    searchText = '';
   }
 
   @action
   Future<void> getCategorySpents(CategoryModel category) async {
+    categorySpents.clear();
     loading.updateLoading(true);
     List<SpentModel> spents = await _api.getCategorySpents(category: category);
     categorySpents.addAll(spents);
@@ -150,27 +163,24 @@ abstract class _SpentController with Store {
       positiveBalance = categorySpentsValue < value;
 
   @action
-  Future<void> searchSpent({String search}) async {
+  Future<void> searchSpent() async {
     loading.updateLoading(true);
     mySpents.clear();
-    List<SpentModel> result = await _api.searchSpent(search: search);
+    List<SpentModel> result = await _api.searchSpent(search: searchText);
     if (result == null) {
-      updateSearch(true);
+      isEmptySearch(true);
     } else {
       mySpents.addAll(result);
-      updateSearch(false);
+      isEmptySearch(false);
     }
     loading.updateLoading(false);
   }
 
-  @observable
-  CardModel cardSpent = CardModel();
-
   @action
-  CardModel selectCardSpent(CardModel c) {
+  CardModel selectCardSpent(CardModel card) {
     cardSpent = null;
-    cardSpent = c;
-    return c;
+    cardSpent = card;
+    return card;
   }
 
   @action
@@ -187,6 +197,12 @@ abstract class _SpentController with Store {
   updateMonthSpent({String id, double spent}) async {
     await categoryController.updateMonthSpent(
         id: selectedCategory.objectId, spent: spent);
+  }
+
+  @action
+  nextPage() {
+    page++;
+    getSpents();
   }
 
   getFormattedCurrentMonth() {
@@ -211,10 +227,10 @@ abstract class _SpentController with Store {
   String cantRegisterSpentMessage() {
     if (!hasCards()) {
       // ignore: lines_longer_than_80_chars
-      return 'Para registrar seus gastos precisamos ao menos uma categoria registrada';
-    } else if (!hasCategories()) {
-      // ignore: lines_longer_than_80_chars
       return 'Para registrar seus gastos precisamos ao menos um cartão registrado';
+    } else if (!hasCategories()) {
+      return 'Para registrar seus gastos precisamos ao menos uma categoria registrada';
+      // ignore: lines_longer_than_80_chars
     }
     // ignore: lines_longer_than_80_chars
     return 'Para registrar seus gastos precisamos ao menos uma categoria e um cartão registrados';

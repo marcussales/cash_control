@@ -28,7 +28,8 @@ class CategoryListWidget extends StatelessWidget {
         height: 115,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: isSelectable ? categories.length : 10,
+          itemCount:
+              isSelectable && categories.length < 10 ? categories.length : 10,
           itemBuilder: (_, int index) {
             return CategoryTile(
                 isSelectable: isSelectable,

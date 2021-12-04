@@ -117,6 +117,36 @@ mixin _$SpentController on _SpentController, Store {
     });
   }
 
+  final _$searchTextAtom = Atom(name: '_SpentController.searchText');
+
+  @override
+  String get searchText {
+    _$searchTextAtom.reportRead();
+    return super.searchText;
+  }
+
+  @override
+  set searchText(String value) {
+    _$searchTextAtom.reportWrite(value, super.searchText, () {
+      super.searchText = value;
+    });
+  }
+
+  final _$pageAtom = Atom(name: '_SpentController.page');
+
+  @override
+  int get page {
+    _$pageAtom.reportRead();
+    return super.page;
+  }
+
+  @override
+  set page(int value) {
+    _$pageAtom.reportWrite(value, super.page, () {
+      super.page = value;
+    });
+  }
+
   final _$registerSpentAsyncAction =
       AsyncAction('_SpentController.registerSpent');
 
@@ -146,9 +176,8 @@ mixin _$SpentController on _SpentController, Store {
   final _$searchSpentAsyncAction = AsyncAction('_SpentController.searchSpent');
 
   @override
-  Future<void> searchSpent({String search}) {
-    return _$searchSpentAsyncAction
-        .run(() => super.searchSpent(search: search));
+  Future<void> searchSpent() {
+    return _$searchSpentAsyncAction.run(() => super.searchSpent());
   }
 
   final _$deleteSpentAsyncAction = AsyncAction('_SpentController.deleteSpent');
@@ -204,11 +233,11 @@ mixin _$SpentController on _SpentController, Store {
   }
 
   @override
-  bool updateSearch(dynamic value) {
+  bool isEmptySearch(dynamic value) {
     final _$actionInfo = _$_SpentControllerActionController.startAction(
-        name: '_SpentController.updateSearch');
+        name: '_SpentController.isEmptySearch');
     try {
-      return super.updateSearch(value);
+      return super.isEmptySearch(value);
     } finally {
       _$_SpentControllerActionController.endAction(_$actionInfo);
     }
@@ -248,11 +277,22 @@ mixin _$SpentController on _SpentController, Store {
   }
 
   @override
-  CardModel selectCardSpent(CardModel c) {
+  CardModel selectCardSpent(CardModel card) {
     final _$actionInfo = _$_SpentControllerActionController.startAction(
         name: '_SpentController.selectCardSpent');
     try {
-      return super.selectCardSpent(c);
+      return super.selectCardSpent(card);
+    } finally {
+      _$_SpentControllerActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic nextPage() {
+    final _$actionInfo = _$_SpentControllerActionController.startAction(
+        name: '_SpentController.nextPage');
+    try {
+      return super.nextPage();
     } finally {
       _$_SpentControllerActionController.endAction(_$actionInfo);
     }
@@ -267,7 +307,9 @@ positiveBalance: ${positiveBalance},
 updateSpentsStatus: ${updateSpentsStatus},
 currentCard: ${currentCard},
 selectedCategory: ${selectedCategory},
-cardSpent: ${cardSpent}
+cardSpent: ${cardSpent},
+searchText: ${searchText},
+page: ${page}
     ''';
   }
 }

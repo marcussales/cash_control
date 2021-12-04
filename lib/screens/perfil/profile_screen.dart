@@ -90,9 +90,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           color: ColorsUtil.verdeEscuro,
         ),
         _buildOption(
-          title: 'Relatório financeiro',
-          icon: Icons.insert_chart_outlined,
-        ),
+            title: 'Relatório financeiro',
+            icon: Icons.insert_chart_outlined,
+            screen: SpentsReportScreen()),
         Divider(
           height: 0.1,
           color: ColorsUtil.verdeEscuro,
@@ -157,7 +157,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return ContainerPlus(
       margin: EdgeInsets.only(top: 300),
       child: Text(
-        // apkCurrentVersion(),
         currentVersion,
         style: new TextStyle(
             fontSize: 16.0,

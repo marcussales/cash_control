@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cash_control/api/category_api.dart';
 import 'package:cash_control/models/CardSpentModel.dart';
 import 'package:cash_control/models/CategoryModel.dart';
@@ -5,6 +7,7 @@ import 'package:cash_control/shared/global.dart';
 import 'package:cash_control/shared/dialog_message.dart';
 import 'package:flutter_plus/flutter_plus.dart';
 import 'package:mobx/mobx.dart';
+import 'package:collection/collection.dart';
 part 'category_controller.g.dart';
 
 class CategoryController = _CategoryController with _$CategoryController;
@@ -28,9 +31,13 @@ abstract class _CategoryController with Store {
         ? 'Categoria criada com sucesso'
         : 'Categoria editada com sucesso');
     await getCategories();
-    CategoryModel currentCategory =
-        categoriesList.firstWhere((CategoryModel c) => c.objectId == id);
-    navigatorPlus.back(result: currentCategory);
+    if (id != null) {
+      CategoryModel currentCategory =
+          categoriesList.firstWhere((CategoryModel c) => c.objectId == id);
+      navigatorPlus.back(result: currentCategory);
+      return;
+    }
+    navigatorPlus.back();
     loading.updateLoading(false);
   }
 
@@ -64,18 +71,6 @@ abstract class _CategoryController with Store {
   @action
   CategoryModel resetSelectedCategory() =>
       selectedCategorySpent = CategoryModel();
-
-  @action
-  Future<List<CategoryModel>> getMoreEconomicCategories() async {
-    List<CategoryModel> categoriesWithSpentThisMonth = [];
-    List<CategoryModel> moreEconomicCategories = [];
-    categoriesList.forEach((c) {
-      if (c.monthSpents.firstWhere((m) => m['month'] == DateTime.now().month) !=
-          null) {
-        categoriesWithSpentThisMonth.add(c);
-      }
-    });
-  }
 
   bool isSelectedCategory(item) =>
       selectedCategorySpent.objectId == item.objectId;

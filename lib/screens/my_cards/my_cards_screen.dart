@@ -58,7 +58,7 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
 
   Widget _buildNoCardArea() {
     return Column(
-      children: [
+      children: <Widget>[
         NoResultWidget(message: 'Você ainda não possui cartões registrados'),
         SizedBox(height: 40),
         ButtonWidget(

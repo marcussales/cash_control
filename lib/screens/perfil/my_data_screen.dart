@@ -48,7 +48,7 @@ class _MyDataScreenState extends State<MyDataScreen> {
 
   Widget _buildBody() {
     return Column(
-      children: [
+      children: <Widget>[
         ProfileImageWidget(
           height: 120,
           width: 130,
@@ -90,7 +90,7 @@ class _MyDataScreenState extends State<MyDataScreen> {
       DialogMessage.showMessageRequiredFields();
     }
 
-    var formattedMonthIncome =
+    double formattedMonthIncome =
         double.parse(txtMonthIncomeController.text.formatStringToReal());
     String formattedGoal = txtGoalController.text.formatStringToReal();
     auth.user.spentGoal = double.parse(formattedGoal);

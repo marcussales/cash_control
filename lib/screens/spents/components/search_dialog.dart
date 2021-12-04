@@ -1,3 +1,4 @@
+import 'package:cash_control/shared/global.dart';
 import 'package:cash_control/util/colors_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_plus/flutter_plus.dart';
@@ -7,6 +8,7 @@ class SearchDialog extends StatelessWidget {
       : controller = TextEditingController(text: currentSearch);
   final String currentSearch;
   final TextEditingController controller;
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -18,29 +20,31 @@ class SearchDialog extends StatelessWidget {
           child: Card(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            child: TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                  hintText: 'Busque por um gasto',
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 15),
-                  prefixIcon: IconButton(
-                      icon: Icon(
-                        Icons.arrow_back,
-                        color: ColorsUtil.verdeEscuro,
-                      ),
-                      onPressed: navigatorPlus.back),
-                  suffixIcon: IconButton(
-                      icon: Icon(Icons.search, color: ColorsUtil.verdeClaro),
-                      onPressed: () {
+            child: TextFieldPlus(
+                padding: EdgeInsets.all(5),
+                controller: controller,
+                cursorColor: ColorsUtil.verdeEscuro,
+                enabled: true,
+                autofocus: true,
+                textInputAction: TextInputAction.search,
+                placeholder: TextPlus(
+                  'Busque por um gasto',
+                  color: Colors.black38,
+                ),
+                prefixWidget: IconButton(
+                  onPressed: () => navigatorPlus.back(result: ''),
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: ColorsUtil.verdeEscuro,
+                  ),
+                ),
+                suffixWidget: IconButton(
+                    icon: Icon(Icons.search, color: ColorsUtil.verdeClaro),
+                    onPressed: () {
+                      if (controller.text != '') {
                         navigatorPlus.back(result: controller.text);
-                      })),
-              textInputAction: TextInputAction.search,
-              onSubmitted: (String text) {
-                Navigator.of(context).pop(text);
-              },
-              autofocus: true,
-            ),
+                      }
+                    })),
           ),
         )
       ],

@@ -40,7 +40,7 @@ class SpentApi {
   }
 
   Future<List<SpentModel>> getMonthSpents(
-      {int limit, int currentMonth, String cardId}) async {
+      {int limit, int currentMonth, String cardId, int page}) async {
     final queryBuilder = QueryBuilder(ParseObject(keySpentTable))
       ..orderByDescending(keySpentDate);
     queryBuilder.whereEqualTo(keySpentOwner, auth.user.id);

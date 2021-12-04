@@ -175,11 +175,12 @@ abstract class _CardController with Store {
     await getSavingsData();
   }
 
-  CardModel moreEconomicCard() {
+  CardModel moreEconomicOrWastedCard({bool moreEconomic}) {
     List<num> spentsByCards = [];
     cards.forEach((CardModel c) => spentsByCards.add(c.monthSpents.totalValue));
-    CardModel moreEconomic = cards.firstWhere((CardModel card) =>
-        card.monthSpents.totalValue == spentsByCards.reduce(min));
-    return moreEconomic;
+    CardModel card = cards.firstWhere((CardModel card) =>
+        card.monthSpents.totalValue ==
+        spentsByCards.reduce(moreEconomic ? min : max));
+    return card;
   }
 }

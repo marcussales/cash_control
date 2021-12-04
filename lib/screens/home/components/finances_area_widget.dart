@@ -43,7 +43,7 @@ class FinancesAreaWidget extends StatelessWidget {
         ContainerPlus(
           width: 200,
           child: TextPlus(
-            'Registre seus gastos e veja suas ecônomias mensais',
+            'Registre seus gastos e veja suas economias mensais',
             fontSize: 22,
             color: ColorsUtil.verdeEscuro,
             fontWeight: FontWeight.w700,
@@ -79,7 +79,7 @@ class FinancesAreaWidget extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
           SizedBox(height: 10),
-          TextPlus('Suas ecônomias esse mês',
+          TextPlus('Suas economias esse mês',
               fontSize: 18, color: ColorsUtil.verdeEscuro),
           SizedBox(height: 25),
           ButtonPlus(

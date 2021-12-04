@@ -165,6 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
             width: 185,
             child: ButtonWidget(
               text: 'Criar nova categoria',
+              onPressed: () => navigatorPlus.show(CategoryScreen()),
             ))
       ],
     );
@@ -190,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ContainerPlus(
                 width: 240,
                 child: TextPlus(
-                  'Complete seu cadastro para visualizar suas ecônomias',
+                  'Complete seu cadastro para visualizar suas economias',
                   fontSize: 22,
                   color: ColorsUtil.verdeSecundario,
                   fontWeight: FontWeight.w700,

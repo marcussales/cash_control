@@ -52,12 +52,12 @@ class CategoryApi {
   }
 
   Future<List<CategoryModel>> getMoreEconomicCategories() async {
-    final queryBuilder = QueryBuilder(ParseObject(keyCategoryTable))
+    final QueryBuilder<ParseObject> queryBuilder = QueryBuilder(ParseObject(keyCategoryTable))
       ..orderByAscending(keyMonthSpents);
 
     queryBuilder.whereEqualTo(keyUserId, auth.user.id);
 
-    final response = await queryBuilder.query();
+    final ParseResponse response = await queryBuilder.query();
     if (response.success) {
       return response.results
           .map((e) => CategoryModel().mapParseToCategory(e))
@@ -69,13 +69,13 @@ class CategoryApi {
 
   Future<List<CategoryModel>> updateMonthSpentCategory(
       {String categoryId, double spent}) async {
-    final queryBuilder = QueryBuilder(ParseObject(keyCategoryTable));
+    final QueryBuilder<ParseObject> queryBuilder = QueryBuilder(ParseObject(keyCategoryTable));
     queryBuilder.whereEqualTo(keyObjectId, categoryId);
 
-    final response = await queryBuilder.query();
+    final ParseResponse response = await queryBuilder.query();
     if (response.success) {
-      final category = response.results;
-      final categoryObject = ParseObject(keyCategoryTable);
+      final List category = response.results;
+      final ParseObject categoryObject = ParseObject(keyCategoryTable);
       if (category.first[keyMonthSpents] == null) {
         category.first[keyMonthSpents] = [
           {'month': DateTime.now().month, 'totalValue': 0.0}
@@ -98,7 +98,7 @@ class CategoryApi {
       categoryObject.set<String>(keyObjectId, categoryId);
       categoryObject.set<String>(keyUserId, auth.user.id);
       categoryObject.set<List>(keyMonthSpents, category.first['monthSpents']);
-      final res = await categoryObject.save();
+      final ParseResponse res = await categoryObject.save();
       if (!res.success) {
         return Future.error(ParseErrors.getDescription(response.error.code));
       } else {

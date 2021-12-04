@@ -16,15 +16,8 @@ class SpentsReportScreen extends StatefulWidget {
 }
 
 class _SpentsReportScreenState extends State<SpentsReportScreen> {
-  CardController cardController = GetIt.I<CardController>();
-  SpentController spentController = GetIt.I<SpentController>();
-
   @override
   void initState() {
-    auth.averageCalc();
-    auth.percentageDiffCurrentPreviousMonth();
-    categoryController.getMoreEconomicCategories();
-
     super.initState();
   }
 
@@ -36,173 +29,134 @@ class _SpentsReportScreenState extends State<SpentsReportScreen> {
       ),
       body: SingleChildScrollView(
         child: ContainerPlus(
-            alignment: Alignment.center,
-            padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
-            child: _buildBody()),
+          padding: EdgeInsets.fromLTRB(18, 15, 18, 0),
+          child: _buildBody(),
+        ),
       ),
     );
   }
 
   Widget _buildBody() {
-    return Column(children: [
-      _buildAverageArea(),
-      SizedBox(
-        height: 25,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        _buildTodayTxt(),
+        _buildFinancesArea(),
+        Divider(),
+        SizedBox(height: 25),
+        _buildMoreSpentArea()
+      ],
+    );
+  }
+
+  Widget _buildTodayTxt() {
+    return Column(children: <Widget>[
+      TextPlus(
+        'Este mês até ${DateTime.now().day} de ${spentController.getFormattedCurrentMonth().toString().toLowerCase()}',
+        textAlign: TextAlign.left,
+        fontSize: 22,
+        color: ColorsUtil.verdeEscuro,
       ),
-      _buildPositiveResume(),
       SizedBox(
-        height: 25,
-      ),
-      _buildPositiveChampions()
+        height: 50,
+      )
     ]);
   }
 
-  ContainerPlus _buildAverageArea() {
-    return ContainerPlus(
-      radius: RadiusPlus.all(20),
-      padding: EdgeInsets.fromLTRB(0, 25, 20, 25),
-      color: ColorsUtil.azulClaro,
-      height: 140,
-      width: 500,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          ContainerPlus(
-              width: 120,
-              height: 110,
-              child: Image.asset(
-                'assets/images/chart.png',
-              )),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              TextPlus('Média de gasto mensal',
-                  color: Colors.white, fontSize: 20),
-              SizedBox(height: 25),
-              TextPlus('${auth.averageValue}'.numToFormattedMoney(),
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 30),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPositiveResume() {
-    return ContainerPlus(
-      radius: RadiusPlus.all(20),
-      padding: EdgeInsets.fromLTRB(0, 10, 20, 20),
-      color: ColorsUtil.getColorByHex('#4BDE5A'),
-      child: Column(
-        children: [
-          Row(children: [
-            Image.asset(
-              'assets/images/happy.png',
-              height: 120,
-            ),
-            ContainerPlus(
-              width: 210,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextPlus(
-                    'Parabéns!',
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  TextPlus(
-                    'Você economizou ${auth.percentBalance}% acima da média mensal',
-                    fontSize: 18,
-                    textAlign: TextAlign.start,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ],
+  Widget _buildFinancesArea() {
+    return Column(
+      children: <Widget>[
+        Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              TextPlus(
+                'Você economizou',
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: ColorsUtil.verdeEscuro,
               ),
-            ),
-          ]),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMonthList() {
-    return ContainerPlus(
-        height: 35,
-        child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: spentController.months.length,
-            itemBuilder: (_, index) {
-              return MonthTile(
-                  month: spentController.months[index],
-                  isCurrentMonth:
-                      spentController.months[index].id == DateTime.now().month);
-            }));
-  }
-
-  Widget _buildPositiveChampions() {
-    return ContainerPlus(
-        radius: RadiusPlus.all(20),
-        padding: EdgeInsets.fromLTRB(0, 10, 20, 20),
-        color: ColorsUtil.getColorByHex('#E0FEE3'),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                ContainerPlus(
-                    child: Image.asset(
-                  'assets/images/podium.png',
-                  width: 100.0,
-                  height: 120,
-                )),
-                TextPlus(
-                  'Campeões em ecônomia',
+              ContainerPlus(
+                radius: RadiusPlus.all(50),
+                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                color: ColorsUtil.verdeSucesso,
+                child: TextPlus(
+                  cardController.savingsValue.formattedMoneyBr(),
                   fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                )
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  RichTextPlus(texts: [
-                    TextPlus(
-                      'Valor economizado: ',
-                      fontSize: 20,
-                      padding: const EdgeInsets.only(left: 20),
-                    ),
-                    TextPlus('${auth.currentSaving}'.numToFormattedMoney(),
-                        fontWeight: FontWeight.w800, fontSize: 23)
-                  ]),
-                  SizedBox(height: 25),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextPlus(
-                        'Cartão com o menor gasto',
-                        fontSize: 18,
-                      ),
-                      CardItemWidget(
-                        card: cardController.moreEconomicCard(),
-                        callbackSelectItem: (item) {},
-                        isSelectedItem: (item) => true,
-                        isSelectable: false,
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ));
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+            ]),
+        SizedBox(height: 35),
+        _buildDefaultRow(
+          title: 'Categoria mais ecônomica',
+          value: 'Lanches',
+          color: ColorsUtil.verdeSucesso,
+        ),
+        SizedBox(height: 25),
+        _buildDefaultRow(
+          title: 'Cartão mais ecônomico',
+          value: cardController
+              .moreEconomicOrWastedCard(moreEconomic: true)
+              .cardName,
+          color: ColorsUtil.verdeSucesso,
+        ),
+        SizedBox(height: 25),
+      ],
+    );
   }
+
+  Widget _buildMoreSpentArea() {
+    return Column(
+      children: <Widget>[
+        _buildDefaultRow(
+            title: 'Categoria que gerou mais gastos',
+            value: 'Uber',
+            color: ColorsUtil.vermelhoEscuro),
+        SizedBox(height: 25),
+        _buildDefaultRow(
+            title: 'Cartão com mais gastos:',
+            value: cardController
+                .moreEconomicOrWastedCard(moreEconomic: false)
+                .cardName,
+            color: ColorsUtil.vermelhoEscuro),
+        SizedBox(height: 25),
+      ],
+    );
+  }
+}
+
+Widget _buildAverageMonth() {}
+
+Row _buildDefaultRow({String title, String value, Color color}) {
+  return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        TextPlus(
+          title,
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: ColorsUtil.verdeEscuro,
+        ),
+        TextPlus(
+          value,
+          fontSize: 16,
+          color: color,
+          fontWeight: FontWeight.bold,
+        ),
+      ]);
+}
+
+Widget _buildMonthList() {
+  return ContainerPlus(
+      height: 35,
+      child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: spentController.months.length,
+          itemBuilder: (_, index) {
+            return MonthTile(
+                month: spentController.months[index],
+                isCurrentMonth:
+                    spentController.months[index].id == DateTime.now().month);
+          }));
 }

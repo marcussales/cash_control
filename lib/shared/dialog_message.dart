@@ -11,16 +11,26 @@ class DialogMessage {
   // ignore: public_member_api_docs
   static SnackBarPlus errorMsg(String title) {
     // ignore: lines_longer_than_80_chars
-    showMessage(title: title, bgColor: ColorsUtil.vermelhoEscuro);
+    showMessage(title: title, messageColor: ColorsUtil.vermelhoEscuro);
   }
 
   // ignore: public_member_api_docs
   static SnackBarPlus showSucessMessage(String title) {
     // ignore: lines_longer_than_80_chars
-    showMessage(
-        title: title,
-        messageColor: Colors.white,
-        bgColor: ColorsUtil.verdeSucesso);
+    snackBarPlus.show(
+      backgroundColor: ColorsUtil.verdeSucesso,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          TextPlus(
+            title,
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+          ),
+        ],
+      ),
+    );
   }
 
   // ignore: public_member_api_docs
@@ -40,20 +50,5 @@ class DialogMessage {
           navigatorPlus.back();
         },
         screenHorizontalMargin: 50);
-
-    // snackBarPlus.show(
-    //   backgroundColor: bgColor ?? Colors.white,
-    //   child: Row(
-    //     mainAxisAlignment: MainAxisAlignment.center,
-    //     children: [
-    //       TextPlus(
-    //         title,
-    //         color: txtColor ?? ColorsUtil.verdeEscuro,
-    //         fontSize: 14,
-    //         fontWeight: FontWeight.bold,
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 }

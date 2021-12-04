@@ -6,6 +6,7 @@ import 'package:cash_control/controllers/icons_controller.dart';
 import 'package:cash_control/controllers/loading.controller.dart';
 import 'package:cash_control/controllers/user_controller.dart';
 import 'package:cash_control/controllers/spent_controller.dart';
+import 'package:cash_control/screens/introduction/introduction_screen.dart';
 import 'package:cash_control/screens/login/login_screen.dart';
 import 'package:cash_control/screens/no_signal/no_signal.screen.dart';
 import 'package:cash_control/screens/splash/splash_screen.dart';
@@ -53,31 +54,32 @@ class CashControl extends StatelessWidget {
     return FutureBuilder(
         future: Init.instance.initialize(),
         builder: (context, AsyncSnapshot snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return MaterialApp(home: SplashScreen());
-          } else {
-            return FlutterAppPlus(
-              title: 'Cash Control',
-              navigatorKey: navigatorPlus.key,
-              home: auth.user?.id != null ? BaseScreen() : LoginScreen(),
-              theme: ThemeData(
-                primaryColor: ColorsUtil.verdeEscuro,
-                fontFamily: 'Roboto',
-                appBarTheme: AppBarTheme(elevation: 0),
-                textSelectionTheme: TextSelectionThemeData(
-                  cursorColor: ColorsUtil.verdeEscuro,
-                ),
+          // if (snapshot.connectionState == ConnectionState.waiting) {
+          //   return MaterialApp(home: SplashScreen());
+          // } else {
+          return FlutterAppPlus(
+            title: 'Cash Control',
+            navigatorKey: navigatorPlus.key,
+            home: auth.user?.id != null ? BaseScreen() : LoginScreen(),
+            theme: ThemeData(
+              primaryColor: ColorsUtil.verdeEscuro,
+              fontFamily: 'Roboto',
+              appBarTheme: AppBarTheme(elevation: 0),
+              textSelectionTheme: TextSelectionThemeData(
+                cursorColor: ColorsUtil.verdeEscuro,
               ),
-              localizationsDelegates: [
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                DefaultCupertinoLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: const [Locale('pt', 'BR')],
-            );
-          }
-        });
+            ),
+            localizationsDelegates: [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              DefaultCupertinoLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [Locale('pt', 'BR')],
+          );
+        }
+        // }
+        );
   }
 }
 

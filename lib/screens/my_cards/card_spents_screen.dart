@@ -2,6 +2,7 @@ import 'package:cash_control/controllers/card_controller.dart';
 import 'package:cash_control/controllers/spent_controller.dart';
 import 'package:cash_control/models/CardModel.dart';
 import 'package:cash_control/models/SpentModel.dart';
+import 'package:cash_control/screens/loading/loading_screen.dart';
 import 'package:cash_control/screens/my_cards/card_screen.dart';
 import 'package:cash_control/screens/spents/components/spent_tile.dart';
 import 'package:cash_control/shared/global.dart';
@@ -38,14 +39,17 @@ class _CardSpentsScreenState extends State<CardSpentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(),
-      body: SingleChildScrollView(
-        child: ContainerPlus(
-            height: 1200,
-            alignment: Alignment.center,
-            padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
-            child: _buildBody()),
+    return LoadingScreen(
+      key: Key('CardSpentsScreen'),
+      body: Scaffold(
+        appBar: _buildAppBar(),
+        body: SingleChildScrollView(
+          child: ContainerPlus(
+              height: 1200,
+              alignment: Alignment.center,
+              padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
+              child: _buildBody()),
+        ),
       ),
     );
   }

@@ -116,6 +116,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
         title: txtTitle.text,
         spentGoal: txtMonthSpentGoal.text,
         icon: iconsController.getSelectedItem(),
-        id: widget.category.objectId);
+        id: widget.category?.objectId);
   }
 }

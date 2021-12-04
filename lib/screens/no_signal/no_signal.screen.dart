@@ -28,19 +28,20 @@ class _NoSignalScreenState extends State<NoSignalScreen> {
 
   Widget _buildBody() {
     return WillPopScope(
-      onWillPop: () => Future.value(false),
+      onWillPop: () async => Future.value(false),
       child: SingleChildScrollView(
           child: ContainerPlus(
+        alignment: Alignment.center,
         padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
         child: Column(
-          children: [
+          children: <Widget>[
             Image.asset(
               'assets/images/noConnection.png',
-              width: 200.0,
-              height: 600,
+              width: 250.0,
+              height: 650,
             ),
             TextPlus(
-              'Ops... precisamos de internet para buscar suas finanças',
+              'Sem sinal de internet',
               fontWeight: FontWeight.w800,
               fontSize: 24,
               color: ColorsUtil.verdeEscuro,

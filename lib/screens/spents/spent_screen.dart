@@ -214,7 +214,7 @@ class _SpentScreenState extends State<SpentScreen> {
   }
 
   Widget _buildRegisterCategoryArea() {
-    return spentController.hasCategories()
+    return !spentController.hasCategories()
         ? Expanded(
             child: ContainerPlus(
               skeleton: SkeletonPlus.automatic(enabled: loading.isLoading),
@@ -230,7 +230,7 @@ class _SpentScreenState extends State<SpentScreen> {
   }
 
   Widget _buildRegisterCardArea() {
-    return spentController.hasCards()
+    return !spentController.hasCards()
         ? Expanded(
             child: ContainerPlus(
               skeleton: SkeletonPlus.automatic(enabled: loading.isLoading),

@@ -18,13 +18,15 @@ class MySpentsScreen extends StatefulWidget {
 }
 
 class _MySpentsScreenState extends State<MySpentsScreen> {
-  String searchText = '';
+  String searchText;
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => spentController.getSpents(),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (spentController.searchText != '') {
+        spentController.getSpents();
+      }
+    });
     super.initState();
   }
 
@@ -34,29 +36,31 @@ class _MySpentsScreenState extends State<MySpentsScreen> {
       key: Key('MySpentsScreen'),
       body: Scaffold(
           appBar: _buildAppBar(),
-          body: SingleChildScrollView(
-            child: ContainerPlus(
-              padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
-              child: _buildBody(),
-            ),
-          )),
+          body: Observer(builder: (_) {
+            return SingleChildScrollView(
+              child: ContainerPlus(
+                padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
+                child: _buildBody(),
+              ),
+            );
+          })),
     );
   }
 
-  CustomAppBar _buildAppBar() {
+  Widget _buildAppBar() {
     return CustomAppBar(
       title: 'Meus gastos',
       showAction: true,
       showBackButton: false,
       actionIcon: Icons.search,
       callback: () async {
-        searchText = await showDialog(
+        spentController.searchText = await showDialog(
             context: context,
             builder: (_) => SearchDialog(
-                  currentSearch: '',
+                  currentSearch: spentController.searchText,
                 ));
-        if (searchText != null) {
-          spentController.searchSpent(search: searchText);
+        if (spentController.searchText != '') {
+          spentController.searchSpent();
           return;
         }
         await spentController.getSpents();
@@ -65,14 +69,12 @@ class _MySpentsScreenState extends State<MySpentsScreen> {
   }
 
   Widget _buildBody() {
-    return Observer(builder: (_) {
-      return spentController.emptySearch && !loading.isLoading
-          ? NoResultWidget(
-              message: searchText == ''
-                  ? 'Você ainda não possui gastos registrados'
-                  : null)
-          : _buildSpentsList();
-    });
+    return spentController.emptySearch && !loading.isLoading
+        ? NoResultWidget(
+            message: searchText == ''
+                ? 'Você ainda não possui gastos registrados'
+                : null)
+        : _buildSpentsList();
   }
 
   Column _buildSpentsList() {
@@ -103,7 +105,16 @@ class _MySpentsScreenState extends State<MySpentsScreen> {
               },
               itemCount: spentController.mySpents.length ?? 10,
               itemBuilder: (_, int index) {
-                return SpentTile(spent: spentController.mySpents[index]);
+                if (index < spentController.mySpents.length) {
+                  return SpentTile(spent: spentController.mySpents[index]);
+                }
+                spentController.nextPage();
+                return Container(
+                  height: 10,
+                  child: LinearProgressIndicator(
+                      valueColor:
+                          AlwaysStoppedAnimation(ColorsUtil.verdeEscuro)),
+                );
               },
             ),
           ),

@@ -37,7 +37,7 @@ class _CardScreenState extends State<CardScreen> {
   @override
   void initState() {
     cardController.resetSelecteds();
-    // setData();
+    setData();
     super.initState();
   }
 
@@ -258,7 +258,7 @@ class _CardScreenState extends State<CardScreen> {
     }
 
     await cardController.saveCard(
-        id: widget.card.cardId,
+        id: widget.card?.cardId,
         name: txtName.text,
         typeId: cardController.selectedCard.cardTypeId,
         bankId: cardController.selectedBank.bankId,

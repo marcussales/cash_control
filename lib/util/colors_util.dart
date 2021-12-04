@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class ColorsUtil {
   static final verdeEscuro = getColorByHex('#004751');
-  static final verdeSucesso = getColorByHex('#4BDE5A');
+  static final verdeSucesso = getColorByHex('#3FB54B');
   static final verdeSecundario = getColorByHex('#E8F44A');
   static final verdeSecundarioGradient = getColorByHex('#006E7D');
   static final verdeClaro = getColorByHex('#067989');

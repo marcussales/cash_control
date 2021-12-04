@@ -11,10 +11,10 @@ class CategoryAreaWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return categoryController.categoriesList.length > 0
         ? Column(
-            children: [
+            children: <Widget>[
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   TextPlus('Gastos por categoria',
                       color: ColorsUtil.verdeEscuro, fontSize: 18),
                   ContainerPlus(

@@ -35,15 +35,6 @@ mixin _$CategoryController on _CategoryController, Store {
         .run(() => super.getCategories(limit: limit));
   }
 
-  final _$getMoreEconomicCategoriesAsyncAction =
-      AsyncAction('_CategoryController.getMoreEconomicCategories');
-
-  @override
-  Future<List<CategoryModel>> getMoreEconomicCategories() {
-    return _$getMoreEconomicCategoriesAsyncAction
-        .run(() => super.getMoreEconomicCategories());
-  }
-
   final _$_CategoryControllerActionController =
       ActionController(name: '_CategoryController');
 
