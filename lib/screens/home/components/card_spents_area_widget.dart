@@ -14,14 +14,11 @@ class CardSpentsAreaWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
-      if (controller.cards.isEmpty) {
-        return SizedBox.shrink();
-      }
       return Column(
-        children: [
+        children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
+            children: <Widget>[
               TextPlus('Gastos em cartões',
                   color: ColorsUtil.verdeEscuro, fontSize: 18),
               TextPlus('(${getCurrentDate()})',

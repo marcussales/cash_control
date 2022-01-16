@@ -20,17 +20,14 @@ class MyCardsScreen extends StatefulWidget {
 class _MyCardsScreenState extends State<MyCardsScreen> {
   @override
   Widget build(BuildContext context) {
-    return LoadingScreen(
-      key: Key('MyCardsScreen'),
-      body: Scaffold(
-        appBar: _buildAppBar(),
-        body: SingleChildScrollView(
-          child: ContainerPlus(
-              height: 700,
-              alignment: Alignment.center,
-              padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
-              child: _buildBody()),
-        ),
+    return Scaffold(
+      appBar: _buildAppBar(),
+      body: SingleChildScrollView(
+        child: ContainerPlus(
+            height: 700,
+            alignment: Alignment.center,
+            padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
+            child: _buildBody()),
       ),
     );
   }

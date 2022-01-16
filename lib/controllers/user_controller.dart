@@ -33,7 +33,7 @@ abstract class _UserController with Store {
   bool isNewUser = false;
 
   @action
-  bool updateLoginStatus(value) => doLogin = value;
+  bool updateLoginStatus(bool value) => doLogin = value;
 
   Future<void> logoutCurrentUser(_googleSignIn) async {
     if (_googleSignIn.currentUser == null) {
@@ -54,7 +54,9 @@ abstract class _UserController with Store {
       isNewUser = false;
       return _setDataToUser(googleSignInAccount, currentUserData, false);
     } else {
-      await signUpUser(googleSignInAccount);
+      DialogMessage.errorMsg('Usuário não encontrado');
+      updateLoginStatus(false);
+      return null;
     }
   }
 

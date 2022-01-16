@@ -34,7 +34,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   itemBuilder: (BuildContext ctx, index) {
                     return CategoryTile(
                       category: categoryController.categoriesList[index],
-                      hasItens: categoryController.categoriesList.length == 0,
                       callbackSelectItem: (item) => null,
                       isSelectedItem: (item) => false,
                     );

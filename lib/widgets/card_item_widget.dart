@@ -46,7 +46,7 @@ class CardItemWidget extends StatelessWidget {
         width: width ?? 165,
         height: heigth ?? 110,
         gradient: GradientPlus.linear(
-          colors: gradientColor(card),
+          colors: _gradientColor(card),
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -84,7 +84,7 @@ class CardItemWidget extends StatelessWidget {
                         color: isSelectedItem(card)
                             ? Colors.white
                             : ColorsUtil.verdeEscuro)
-                    : TextPlus(spentValue(),
+                    : TextPlus(_spentValue(),
                         fontSize: 18,
                         fontWeight: isSelectedItem(card)
                             ? FontWeight.w700
@@ -100,13 +100,13 @@ class CardItemWidget extends StatelessWidget {
     });
   }
 
-  List<Color> gradientColor(CardModel card) {
+  List<Color> _gradientColor(CardModel card) {
     if (isSelectedItem(card) || !isSelectable)
       return [ColorsUtil.verdeEscuro, ColorsUtil.verdeSecundarioGradient];
     return [ColorsUtil.cinzaClaro, ColorsUtil.cinzaClaroGradient];
   }
 
-  String spentValue() {
+  String _spentValue() {
     return card.monthSpents.totalValue > 0
         ? '${card.monthSpents.totalValue.toString().numToFormattedMoney()}'
         : '0.0'.numToFormattedMoney();

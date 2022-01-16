@@ -49,20 +49,18 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return LoadingScreen(
-        key: Key('CategoryScreen'),
-        body: Scaffold(
-          appBar: _buildAppBar(),
-          body: SingleChildScrollView(
-            child: ContainerPlus(
-              height: 500,
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Observer(builder: (_) {
-                return _buildCategoryFields();
-              }),
-            ),
-          ),
-        ));
+    return Scaffold(
+      appBar: _buildAppBar(),
+      body: SingleChildScrollView(
+        child: ContainerPlus(
+          height: 500,
+          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+          child: Observer(builder: (_) {
+            return _buildCategoryFields();
+          }),
+        ),
+      ),
+    );
   }
 
   CustomAppBar _buildAppBar() => CustomAppBar(

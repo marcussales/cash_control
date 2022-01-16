@@ -58,17 +58,14 @@ class _CardScreenState extends State<CardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return LoadingScreen(
-      key: Key('NewCardScreen'),
-      body: Scaffold(
-        appBar: CustomAppBar(
-            title: widget.card == null ? 'Registrar cartão' : 'Editar cartão'),
-        body: SingleChildScrollView(
-          child: ContainerPlus(
-              alignment: Alignment.center,
-              padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
-              child: _buildBody()),
-        ),
+    return Scaffold(
+      appBar: CustomAppBar(
+          title: widget.card == null ? 'Registrar cartão' : 'Editar cartão'),
+      body: SingleChildScrollView(
+        child: ContainerPlus(
+            alignment: Alignment.center,
+            padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
+            child: _buildBody()),
       ),
     );
   }

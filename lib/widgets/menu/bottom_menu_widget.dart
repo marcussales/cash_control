@@ -13,28 +13,23 @@ class BottomMenuWidget extends StatelessWidget {
   }
 
   Widget _buildMenu() {
-    return Observer(builder: (_) {
-      if (loading.isLoading) {
-        return SizedBox.shrink();
-      }
-      return ContainerPlus(
-        shadows: [
-          ShadowPlus(
-            color: ColorsUtil.verdeEscuro,
-            moveDown: -3,
-            moveRight: -1,
-            blur: 5,
-            spread: 0.2,
-            opacity: 0.2,
-          ),
-        ],
-        radius: RadiusPlus.all(20),
-        height: 60,
-        child: BottomAppBar(
-          child: _buildMenuItens(),
+    return ContainerPlus(
+      shadows: [
+        ShadowPlus(
+          color: ColorsUtil.verdeEscuro,
+          moveDown: -3,
+          moveRight: -1,
+          blur: 5,
+          spread: 0.2,
+          opacity: 0.2,
         ),
-      );
-    });
+      ],
+      radius: RadiusPlus.all(20),
+      height: 60,
+      child: BottomAppBar(
+        child: _buildMenuItens(),
+      ),
+    );
   }
 
   Row _buildMenuItens() {

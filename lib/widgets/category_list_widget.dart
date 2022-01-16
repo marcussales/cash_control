@@ -29,14 +29,14 @@ class CategoryListWidget extends StatelessWidget {
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount:
-              isSelectable && categories.length < 10 ? categories.length : 10,
+              categories.length < 10 || isSelectable ? categories.length : 10,
           itemBuilder: (_, int index) {
             return CategoryTile(
-                isSelectable: isSelectable,
-                callbackSelectItem: callbackSelectItem,
-                isSelectedItem: isSelectedItem,
-                category: categories[index],
-                hasItens: categories.length == 0);
+              isSelectable: isSelectable,
+              callbackSelectItem: callbackSelectItem,
+              isSelectedItem: isSelectedItem,
+              category: categories[index],
+            );
           },
         ),
       );

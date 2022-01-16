@@ -1,5 +1,6 @@
 import 'package:cash_control/base/base_screen.dart';
 import 'package:cash_control/controllers/user_controller.dart';
+import 'package:cash_control/models/UserModel.dart';
 import 'package:cash_control/shared/global.dart';
 import 'package:cash_control/shared/dialog_message.dart';
 import 'package:cash_control/util/colors_util.dart';
@@ -21,12 +22,6 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     _controller.logoutCurrentUser(_googleSignIn);
     super.initState();
-  }
-
-  Future<void> _logoutCurrentUser() async {
-    if (_googleSignIn.currentUser == null) {
-      await _googleSignIn.signOut();
-    }
   }
 
   @override
@@ -103,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
       splashColor: ColorsUtil.verdeSecundario,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
+        children: <Widget>[
           TextPlus(
             'Acesse sua conta',
             padding: EdgeInsets.only(left: 15),
@@ -132,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildSignUpArea() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: <Widget>[
         TextPlus(
           'ou',
           fontSize: 22,
@@ -159,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future _login() async {
+  Future<void> _login() async {
     try {
       GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
       // ignore: always_specify_types
@@ -176,17 +171,16 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future _signUp() async {
+  Future<void> _signUp() async {
     try {
       GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
-      var user = await _controller.signUpUser(googleSignInAccount);
+      UserModel user = await _controller.signUpUser(googleSignInAccount);
       if (user != null) {
         navigatorPlus.show(BaseScreen());
         return;
       }
     } catch (error) {
-      DialogMessage.errorMsg(
-          'Não foi possivel realizar o login, tente novamente');
+      DialogMessage.errorMsg('Não foi criar sua conta, tente novamente');
     }
   }
 }

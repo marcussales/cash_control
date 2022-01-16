@@ -26,37 +26,48 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  EdgeInsets _defaultPadding = EdgeInsets.all(15);
+
   @override
   Widget build(BuildContext context) {
-    return LoadingScreen(
-        key: Key('HomeScreen'),
-        body: CustomRefreshIndicator(
-            onRefresh: () async => await Util.getData(),
-            body: Scaffold(
-              body: SingleChildScrollView(
-                child: ContainerPlus(
-                  padding: EdgeInsets.fromLTRB(15, 60, 15, 10),
-                  child: Observer(builder: (_) {
-                    return Column(
-                      children: <Widget>[
-                        _buildHeader(),
-                        _buildBody(),
-                      ],
-                    );
-                  }),
-                ),
-              ),
-            )));
+    return CustomRefreshIndicator(
+        onRefresh: () async => await Util.getData(),
+        body: Scaffold(
+          backgroundColor: ColorsUtil.verdeSecundario,
+          body: SingleChildScrollView(
+            child: ContainerPlus(
+              padding: EdgeInsets.fromLTRB(0, 60, 0, 0),
+              child: Observer(builder: (_) {
+                return Stack(children: [
+                  Column(
+                    children: <Widget>[
+                      _buildHeader(),
+                      _buildBody(),
+                    ],
+                  ),
+                  Positioned(
+                      top: 100,
+                      right: 12,
+                      left: 12,
+                      child:
+                          FinancesAreaWidget(cardController: cardController)),
+                ]);
+              }),
+            ),
+          ),
+        ));
   }
 
   Widget _buildBody() {
-    return auth.user.newUser ? _newUserArea() : _usualUserArea();
+    return ContainerPlus(
+        padding: _defaultPadding,
+        radius: RadiusPlus.top(15),
+        color: ColorsUtil.bg,
+        child: auth.user.newUser ? _newUserArea() : _usualUserArea());
   }
 
   Widget _newUserArea() {
     return Column(children: <Widget>[
-      SizedBox(height: 40),
-      FinancesAreaWidget(cardController: cardController),
       SizedBox(height: 40),
       _buildNewCategoryArea(),
       SizedBox(height: 40),
@@ -66,9 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _usualUserArea() {
     return Column(children: <Widget>[
-      SizedBox(height: 25),
-      FinancesAreaWidget(cardController: cardController),
-      SizedBox(height: 25),
+      SizedBox(height: 100),
       _buildMoreUsedArea(),
       SizedBox(height: 25),
       CategoryAreaWidget(),
@@ -78,28 +87,32 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildHeader() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        ProfileImageWidget(),
-        SizedBox(width: 15),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextPlus(
-              'Olá, ${auth.user.displayName}',
-              fontWeight: FontWeight.w600,
-              color: ColorsUtil.verdeEscuro,
-              fontSize: 26,
-            ),
-            SizedBox(height: 10),
-            TextPlus(
-                'Bem vindo ${auth.user.newUser ? "" : "de volta"} ao Cash Control',
+    return ContainerPlus(
+      padding: _defaultPadding,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              TextPlus(
+                'Olá, ${auth.user.displayName}',
+                fontWeight: FontWeight.w600,
                 color: ColorsUtil.verdeEscuro,
-                fontSize: 15),
-          ],
-        )
-      ],
+                fontSize: 26,
+              ),
+              SizedBox(height: 10),
+              TextPlus(
+                  'Bem vindo ${auth.user.newUser ? "" : "de volta"} ao Cash Control',
+                  color: ColorsUtil.verdeEscuro,
+                  fontSize: 15),
+              SizedBox(
+                height: 100,
+              )
+            ],
+          )
+        ],
+      ),
     );
   }
 
@@ -107,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: <Widget>[
         TextPlus(
           'Mais usados',
           color: ColorsUtil.verdeEscuro,
@@ -115,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         SizedBox(height: 10),
         Row(
-          children: [
+          children: <Widget>[
             Expanded(
               child: ContainerPlus(
                 skeleton: SkeletonPlus.automatic(enabled: loading.isLoading),
@@ -178,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
       color: ColorsUtil.verdeEscuro,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: [
+        children: <Widget>[
           ContainerPlus(
               child: Image.asset(
             'assets/images/moneyPerson.png',
@@ -187,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
           )),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
+            children: <Widget>[
               ContainerPlus(
                 width: 240,
                 child: TextPlus(

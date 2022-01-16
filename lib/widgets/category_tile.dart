@@ -9,14 +9,12 @@ import 'package:flutter_plus/flutter_plus.dart';
 
 class CategoryTile extends StatelessWidget {
   final CategoryModel category;
-  final bool hasItens;
   final bool isSelectable;
   final Function(dynamic) callbackSelectItem;
   final Function(dynamic) isSelectedItem;
 
   const CategoryTile(
       {this.category,
-      this.hasItens,
       this.isSelectable = false,
       this.callbackSelectItem,
       this.isSelectedItem});
@@ -48,7 +46,7 @@ class CategoryTile extends StatelessWidget {
           margin: EdgeInsets.all(4),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              children: <Widget>[
                 ContainerPlus(
                   color: ColorsUtil.verdeSecundario,
                   radius: RadiusPlus.all(15),

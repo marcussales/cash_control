@@ -32,19 +32,16 @@ class _MySpentsScreenState extends State<MySpentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return LoadingScreen(
-      key: Key('MySpentsScreen'),
-      body: Scaffold(
-          appBar: _buildAppBar(),
-          body: Observer(builder: (_) {
-            return SingleChildScrollView(
-              child: ContainerPlus(
-                padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
-                child: _buildBody(),
-              ),
-            );
-          })),
-    );
+    return Scaffold(
+        appBar: _buildAppBar(),
+        body: Observer(builder: (_) {
+          return SingleChildScrollView(
+            child: ContainerPlus(
+              padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
+              child: _buildBody(),
+            ),
+          );
+        }));
   }
 
   Widget _buildAppBar() {

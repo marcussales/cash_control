@@ -12,6 +12,7 @@ const keyUserTable = 'User';
 const keyMonthIncome = 'monthIncome';
 const keyUserSpentGoal = 'spentGoal';
 const keySavings = 'savings';
+
 //ICONS
 const keyIconsTable = 'Icons';
 const keyIconName = 'name';
@@ -22,6 +23,7 @@ const keyCategoryOwner = 'categoryOwner';
 const keyCategoryTitle = 'categoryTitle';
 const keyCategoryIcon = 'categoryIcon';
 const keyCategorySpentGoal = 'categorySpentGoal';
+const keyCurrentMonthSpent = 'currentMonthSpent';
 
 //SPENT
 const keySpentTable = 'Spents';

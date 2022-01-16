@@ -52,7 +52,7 @@ class _SpentsReportScreenState extends State<SpentsReportScreen> {
   Widget _buildTodayTxt() {
     return Column(children: <Widget>[
       TextPlus(
-        'Este mês até ${DateTime.now().day} de ${spentController.getFormattedCurrentMonth().toString().toLowerCase()}',
+        _todayInfo(),
         textAlign: TextAlign.left,
         fontSize: 22,
         color: ColorsUtil.verdeEscuro,
@@ -90,7 +90,7 @@ class _SpentsReportScreenState extends State<SpentsReportScreen> {
         SizedBox(height: 35),
         _buildDefaultRow(
           title: 'Categoria mais ecônomica',
-          value: 'Lanches',
+          value: categoryController.getMoreEconomicCategory(moreEconomic: true),
           color: ColorsUtil.verdeSucesso,
         ),
         SizedBox(height: 25),
@@ -111,7 +111,8 @@ class _SpentsReportScreenState extends State<SpentsReportScreen> {
       children: <Widget>[
         _buildDefaultRow(
             title: 'Categoria que gerou mais gastos',
-            value: 'Uber',
+            value:
+                categoryController.getMoreEconomicCategory(moreEconomic: false),
             color: ColorsUtil.vermelhoEscuro),
         SizedBox(height: 25),
         _buildDefaultRow(
@@ -126,7 +127,9 @@ class _SpentsReportScreenState extends State<SpentsReportScreen> {
   }
 }
 
-Widget _buildAverageMonth() {}
+String _todayInfo() {
+  return 'Este mês até ${DateTime.now().day} de ${spentController.getFormattedCurrentMonth().toString().toLowerCase()}';
+}
 
 Row _buildDefaultRow({String title, String value, Color color}) {
   return Row(

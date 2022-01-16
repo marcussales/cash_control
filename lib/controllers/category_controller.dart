@@ -74,4 +74,13 @@ abstract class _CategoryController with Store {
 
   bool isSelectedCategory(item) =>
       selectedCategorySpent.objectId == item.objectId;
+
+  String getMoreEconomicCategory({bool moreEconomic}) {
+    List<num> categories = <num>[];
+    categoriesList
+        .forEach((CategoryModel c) => categories.add(c.currentMonthSpent));
+    CategoryModel category = categoriesList.firstWhere((CategoryModel cat) =>
+        cat?.currentMonthSpent == categories.reduce(moreEconomic ? min : max));
+    return category.title;
+  }
 }

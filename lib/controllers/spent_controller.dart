@@ -152,9 +152,12 @@ abstract class _SpentController with Store {
 
   @action
   diffCategorySpents(value) {
+    value = double.parse(value.replaceAll(',', '.'));
+    print(value);
     if (categorySpentsValue == 0.0) {
       return '${double.parse((value).toString()).formattedMoneyBr()}';
     }
+    // ignore: lines_longer_than_80_chars
     return '${double.parse((value - categorySpentsValue).toString()).formattedMoneyBr()}';
   }
 

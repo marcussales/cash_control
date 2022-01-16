@@ -52,8 +52,9 @@ class CategoryApi {
   }
 
   Future<List<CategoryModel>> getMoreEconomicCategories() async {
-    final QueryBuilder<ParseObject> queryBuilder = QueryBuilder(ParseObject(keyCategoryTable))
-      ..orderByAscending(keyMonthSpents);
+    final QueryBuilder<ParseObject> queryBuilder =
+        QueryBuilder(ParseObject(keyCategoryTable))
+          ..orderByAscending(keyMonthSpents);
 
     queryBuilder.whereEqualTo(keyUserId, auth.user.id);
 
@@ -69,35 +70,38 @@ class CategoryApi {
 
   Future<List<CategoryModel>> updateMonthSpentCategory(
       {String categoryId, double spent}) async {
-    final QueryBuilder<ParseObject> queryBuilder = QueryBuilder(ParseObject(keyCategoryTable));
+    final QueryBuilder<ParseObject> queryBuilder =
+        QueryBuilder(ParseObject(keyCategoryTable));
     queryBuilder.whereEqualTo(keyObjectId, categoryId);
 
     final ParseResponse response = await queryBuilder.query();
     if (response.success) {
-      final List category = response.results;
+      final category = response.results.first;
       final ParseObject categoryObject = ParseObject(keyCategoryTable);
-      if (category.first[keyMonthSpents] == null) {
-        category.first[keyMonthSpents] = [
+      if (category[keyMonthSpents] == null) {
+        category[keyMonthSpents] = [
           {'month': DateTime.now().month, 'totalValue': 0.0}
         ];
       }
-      final currentMonthIdx = category.first[keyMonthSpents]
+      final currentMonthIdx = category[keyMonthSpents]
           .indexWhere((c) => c['month'] == DateTime.now().month);
       if (currentMonthIdx != -1) {
-        final currentMonthSpents =
-            category.first[keyMonthSpents][currentMonthIdx];
+        final currentMonthSpents = category[keyMonthSpents][currentMonthIdx];
         currentMonthSpents['totalValue'] =
             currentMonthSpents['totalValue'] != null
                 ? currentMonthSpents['totalValue'] + spent
                 : spent;
+        categoryObject.set<num>(
+            keyCurrentMonthSpent, currentMonthSpents['totalValue']);
       } else {
-        category.first['monthSpents'].add(CardMonthSpentsModel(
+        category['monthSpents'].add(CardMonthSpentsModel(
                 month: DateTime.now().month, totalValue: (spent))
             .toJson());
+        categoryObject.set<num>(keyCurrentMonthSpent, (spent));
       }
       categoryObject.set<String>(keyObjectId, categoryId);
       categoryObject.set<String>(keyUserId, auth.user.id);
-      categoryObject.set<List>(keyMonthSpents, category.first['monthSpents']);
+      categoryObject.set<List>(keyMonthSpents, category['monthSpents']);
       final ParseResponse res = await categoryObject.save();
       if (!res.success) {
         return Future.error(ParseErrors.getDescription(response.error.code));

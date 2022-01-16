@@ -18,12 +18,12 @@ class FinancesAreaWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ContainerPlus(
       skeleton: SkeletonPlus.automatic(enabled: loading.isLoading),
-      radius: RadiusPlus.all(15),
-      padding: EdgeInsets.fromLTRB(15, 15, 0, 15),
-      color: ColorsUtil.verdeSecundario,
+      radius: RadiusPlus.all(35),
+      padding: EdgeInsets.fromLTRB(20, 15, 0, 15),
+      color: ColorsUtil.verdeEscuro,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
+        children: <Widget>[
           auth.user.newUser ? _buildNewSpentArea() : _buildMyFinancesArea(),
           ContainerPlus(
               child: Image.asset(
@@ -39,13 +39,13 @@ class FinancesAreaWidget extends StatelessWidget {
   Widget _buildNewSpentArea() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: <Widget>[
         ContainerPlus(
           width: 200,
           child: TextPlus(
             'Registre seus gastos e veja suas economias mensais',
             fontSize: 22,
-            color: ColorsUtil.verdeEscuro,
+            color: ColorsUtil.verdeSecundario,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -58,7 +58,7 @@ class FinancesAreaWidget extends StatelessWidget {
             child: TextPlus(
               'Registrar novo gasto',
               fontSize: 18,
-              color: ColorsUtil.verdeEscuro,
+              color: ColorsUtil.verdeSecundario,
             ),
             color: Colors.white,
             splashColor: ColorsUtil.verdeClaro,
@@ -72,30 +72,15 @@ class FinancesAreaWidget extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          TextPlus('Suas economias esse mês',
+              fontSize: 18, color: ColorsUtil.verdeSecundario),
+          SizedBox(height: 10),
           TextPlus(
             cardController.savingsValue.formattedMoneyBr(),
             fontSize: 30,
-            color: ColorsUtil.verdeEscuro,
-            fontWeight: FontWeight.w600,
+            color: ColorsUtil.verdeSecundario,
+            fontWeight: FontWeight.w800,
           ),
-          SizedBox(height: 10),
-          TextPlus('Suas economias esse mês',
-              fontSize: 18, color: ColorsUtil.verdeEscuro),
-          SizedBox(height: 25),
-          ButtonPlus(
-            height: 50,
-            width: 225,
-            radius: RadiusPlus.all(25),
-            child: TextPlus(
-              'Veja com detalhes',
-              fontSize: 18,
-              color: ColorsUtil.verdeEscuro,
-              textAlign: TextAlign.left,
-            ),
-            color: Colors.white,
-            splashColor: ColorsUtil.verdeClaro,
-            onPressed: () => DialogMessage.showMessage(),
-          )
         ],
       );
     });

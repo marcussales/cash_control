@@ -84,8 +84,7 @@ class _CategoryDetailsScreenState extends State<CategoryDetailsScreen> {
               : ColorsUtil.vermelho,
           value: loading.isLoading
               ? ''
-              : spentController.diffCategorySpents(
-                  double.parse(category.spentsGoal.replaceAll(',', '.'))),
+              : spentController.diffCategorySpents(category.spentsGoal),
         ),
         SizedBox(height: 20),
         _buildRegisters()

@@ -39,17 +39,14 @@ class _CardSpentsScreenState extends State<CardSpentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return LoadingScreen(
-      key: Key('CardSpentsScreen'),
-      body: Scaffold(
-        appBar: _buildAppBar(),
-        body: SingleChildScrollView(
-          child: ContainerPlus(
-              height: 1200,
-              alignment: Alignment.center,
-              padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
-              child: _buildBody()),
-        ),
+    return Scaffold(
+      appBar: _buildAppBar(),
+      body: SingleChildScrollView(
+        child: ContainerPlus(
+            height: 1200,
+            alignment: Alignment.center,
+            padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
+            child: _buildBody()),
       ),
     );
   }
@@ -59,18 +56,22 @@ class _CardSpentsScreenState extends State<CardSpentsScreen> {
       title: 'Gastos por cartão',
       showAction: true,
       actionIcon: Icons.edit,
-      callback: () => navigatorPlus.show(CardScreen(
-        card: widget.card,
-      )),
+      callback: () => navigatorPlus.show(
+        CardScreen(
+          card: widget.card,
+        ),
+      ),
     );
   }
 
   Widget _buildBody() {
-    return Column(children: <Widget>[
-      _builCardData(),
-      SizedBox(height: 40),
-      _buildSpentList(),
-    ]);
+    return Column(
+      children: <Widget>[
+        _builCardData(),
+        SizedBox(height: 40),
+        _buildSpentList(),
+      ],
+    );
   }
 
   ContainerPlus _builCardData() {

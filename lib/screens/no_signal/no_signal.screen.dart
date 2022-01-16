@@ -17,7 +17,7 @@ class _NoSignalScreenState extends State<NoSignalScreen> {
     super.initState();
     when((_) => connectivityController.connected, () {
       Navigator.of(context).pop();
-      DialogMessage.showMessage(title: 'Conexão restabelecida com a intenet');
+      DialogMessage.showSucessMessage('Conexão restabelecida com a intenet');
     });
   }
 

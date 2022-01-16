@@ -55,19 +55,16 @@ class _SpentScreenState extends State<SpentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return LoadingScreen(
-      key: Key('SpentScreen'),
-      body: Scaffold(
-          appBar: _buildAppBar(),
-          body: SingleChildScrollView(
-            child: ContainerPlus(
-              padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
-              child: Observer(builder: (_) {
-                return _buildBody();
-              }),
-            ),
-          )),
-    );
+    return Scaffold(
+        appBar: _buildAppBar(),
+        body: SingleChildScrollView(
+          child: ContainerPlus(
+            padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
+            child: Observer(builder: (_) {
+              return _buildBody();
+            }),
+          ),
+        ));
   }
 
   CustomAppBar _buildAppBar() {

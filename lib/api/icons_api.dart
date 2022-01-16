@@ -11,13 +11,13 @@ class IconsApi {
     ParseResponse response = await queryBuilder.query();
 
     if (response.success) {
-      return response.results.map((e) => mapParseToIcon(e)).toList();
+      return response.results.map((e) => _mapParseToIcon(e)).toList();
     } else {
       DialogMessage.errorMsg(ParseErrors.getDescription(response.error.code));
     }
   }
 
-  IconModel mapParseToIcon(icon) {
+  IconModel _mapParseToIcon(icon) {
     return IconModel(
         name: icon.get(keyIconName), icon: icon.get(keyIconImage).url);
   }

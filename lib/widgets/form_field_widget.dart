@@ -59,50 +59,53 @@ class FormFieldWidget extends StatelessWidget {
   Widget _textField() {
     return ContainerPlus(
       skeleton: SkeletonPlus.automatic(enabled: loading.isLoading),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        TextPlus(
-          title,
-          fontSize: 17,
-          color: ColorsUtil.verdeEscuro,
-        ),
-        SizedBox(height: 8),
-        ContainerPlus(
-          border: BorderPlus(color: ColorsUtil.verdeEscuro, width: 1.5),
-          radius: RadiusPlus.all(10),
-          padding: EdgeInsets.symmetric(horizontal: 8),
-          height: 50,
-          child: RawKeyboardListener(
-            focusNode: FocusNode(),
-            onKey: (RawKeyEvent event) {
-              if (event.logicalKey == LogicalKeyboardKey.backspace && isDate) {
-                controller.text = '';
-              }
-            },
-            child: TextField(
-              autofocus: false,
-              cursorColor: ColorsUtil.verdeEscuro,
-              decoration: InputDecoration(
-                  prefixText: isCurrency ? 'R\$' : null,
-                  border: InputBorder.none,
-                  suffixIcon: isDate
-                      ? Icon(
-                          Icons.date_range,
-                          color: ColorsUtil.verdeEscuro,
-                        )
-                      : null),
-              inputFormatters: _getFormatters(),
-              keyboardType: onlyNumbers || isCurrency
-                  ? TextInputType.number
-                  : TextInputType.name,
-              style: TextStyle(
-                color: ColorsUtil.verdeEscuro,
-              ),
-              controller: controller,
-              onChanged: callbackOnChanged,
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            TextPlus(
+              title,
+              fontSize: 17,
+              color: ColorsUtil.verdeEscuro,
             ),
-          ),
-        ),
-      ]),
+            SizedBox(height: 8),
+            ContainerPlus(
+              border: BorderPlus(color: ColorsUtil.verdeEscuro, width: 1.5),
+              radius: RadiusPlus.all(10),
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              height: 50,
+              child: RawKeyboardListener(
+                focusNode: FocusNode(),
+                onKey: (RawKeyEvent event) {
+                  if (event.logicalKey == LogicalKeyboardKey.backspace &&
+                      isDate) {
+                    controller.text = '';
+                  }
+                },
+                child: TextField(
+                  autofocus: false,
+                  cursorColor: ColorsUtil.verdeEscuro,
+                  decoration: InputDecoration(
+                      prefixText: isCurrency ? 'R\$' : null,
+                      border: InputBorder.none,
+                      suffixIcon: isDate
+                          ? Icon(
+                              Icons.date_range,
+                              color: ColorsUtil.verdeEscuro,
+                            )
+                          : null),
+                  inputFormatters: _getFormatters(),
+                  keyboardType: onlyNumbers || isCurrency
+                      ? TextInputType.number
+                      : TextInputType.name,
+                  style: TextStyle(
+                    color: ColorsUtil.verdeEscuro,
+                  ),
+                  controller: controller,
+                  onChanged: callbackOnChanged,
+                ),
+              ),
+            ),
+          ]),
     );
   }
 }
